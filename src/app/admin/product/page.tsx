@@ -1554,7 +1554,7 @@ export default function ProductsPage() {
         </div>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Moddal */}
       <Modal isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal} title="Confirm Deletion">
         <div className="space-y-4">
           {/* API Error Message */}
