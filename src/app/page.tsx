@@ -1072,7 +1072,13 @@ export default function DituPetal() {
               Ditu<span style={{ color: "#7BA37B" }}>Petal</span>
             </h1>
 
-            <div style={{ display: "flex", gap: 24, display: "none", "@media (min-width: 768px)": { display: "flex" } } as any}>
+            <div style={{ 
+              display: "none", 
+              gap: 24, 
+              "@media (min-width: 768px)": { 
+                display: "flex" 
+              } 
+            } as any}>
               {["Garden", "Planters", "Collections", "Care Guide", "Our Story"].map(item => (
                 <a key={item} href="#" style={{
                   color: "#5A6E5A",
@@ -1089,7 +1095,9 @@ export default function DituPetal() {
             maxWidth: 400,
             margin: "0 24px",
             display: "none",
-            "@media (min-width: 768px)": { display: "block" }
+            "@media (min-width: 768px)": { 
+              display: "block" 
+            }
           } as any}>
             <div style={{
               display: "flex",

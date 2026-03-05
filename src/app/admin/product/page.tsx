@@ -357,14 +357,14 @@ export default function ProductsPage() {
     [filteredProducts.length, itemsPerPage]
   );
 
-  // Export to Excel
+  // Export to Excel - Updated currency to INR
   const exportToExcel = useCallback(() => {
     const exportData = products.map(product => ({
       'Product Name': product.name,
       'Slug': product.slug,
       'Category': product.category_name || 'N/A',
-      'Price': `$${product.price}`,
-      'Compare Price': product.compare_price ? `$${product.compare_price}` : 'N/A',
+      'Price': `₹${product.price}`,
+      'Compare Price': product.compare_price ? `₹${product.compare_price}` : 'N/A',
       'Stock': product.stock || 0,
       'Material': product.material || 'N/A',
       'Color': product.color || 'N/A',
@@ -681,7 +681,7 @@ export default function ProductsPage() {
             onClick={() => setIsAddModalOpen(true)}
             className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Add Product</span>
           </button>
         </div>
@@ -740,9 +740,9 @@ export default function ProductsPage() {
                     <div className="text-sm text-gray-900">{product.category_name || 'N/A'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">${product.price}</div>
+                    <div className="text-sm text-gray-900">₹{product.price}</div>
                     {product.compare_price && (
-                      <div className="text-sm text-gray-500 line-through">${product.compare_price}</div>
+                      <div className="text-sm text-gray-500 line-through">₹{product.compare_price}</div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -887,11 +887,11 @@ export default function ProductsPage() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Price</h3>
-                <p className="mt-1">${selectedProduct.price}</p>
+                <p className="mt-1">₹{selectedProduct.price}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Compare Price</h3>
-                <p className="mt-1">{selectedProduct.compare_price ? `$${selectedProduct.compare_price}` : 'N/A'}</p>
+                <p className="mt-1">{selectedProduct.compare_price ? `₹${selectedProduct.compare_price}` : 'N/A'}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Stock</h3>
@@ -1061,7 +1061,7 @@ export default function ProductsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="edit-price" className="block text-sm font-medium text-gray-700">Price</label>
+                <label htmlFor="edit-price" className="block text-sm font-medium text-gray-700">Price (₹)</label>
                 <input
                   type="number"
                   id="edit-price"
@@ -1073,7 +1073,7 @@ export default function ProductsPage() {
                 />
               </div>
               <div>
-                <label htmlFor="edit-compare_price" className="block text-sm font-medium text-gray-700">Compare Price</label>
+                <label htmlFor="edit-compare_price" className="block text-sm font-medium text-gray-700">Compare Price (₹)</label>
                 <input
                   type="number"
                   id="edit-compare_price"
@@ -1349,7 +1349,7 @@ export default function ProductsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="add-price" className="block text-sm font-medium text-gray-700">Price *</label>
+              <label htmlFor="add-price" className="block text-sm font-medium text-gray-700">Price (₹) *</label>
               <input
                 type="number"
                 id="add-price"
@@ -1362,7 +1362,7 @@ export default function ProductsPage() {
               />
             </div>
             <div>
-              <label htmlFor="add-compare_price" className="block text-sm font-medium text-gray-700">Compare Price</label>
+              <label htmlFor="add-compare_price" className="block text-sm font-medium text-gray-700">Compare Price (₹)</label>
               <input
                 type="number"
                 id="add-compare_price"

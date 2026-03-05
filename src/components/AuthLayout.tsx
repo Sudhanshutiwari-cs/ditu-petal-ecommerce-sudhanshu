@@ -24,8 +24,8 @@ export default function AuthLayout({ children, title, subtitle, showLogo = true 
           {showLogo && (
             <div className="flex justify-center items-center gap-2 mb-4">
               <img 
-                src="https://res.cloudinary.com/doficc2yl/image/upload/v1770501660/WhatsApp_Image_2026-02-08_at_3.03.20_AM-removebg-preview_zsstnt.png"
-                alt="FlexFund Logo"
+                src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/Black%20White%20Minimalist%20Beauty%20Typography%20Logo_20260302_154544_0000.png"
+                alt="Ditupetal Logo"
                 className="w-8 h-8 object-contain"
                 onError={(e) => {
                   console.error('Logo failed to load');
@@ -33,7 +33,7 @@ export default function AuthLayout({ children, title, subtitle, showLogo = true 
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <span className="text-2xl font-bold text-gray-900 tracking-tight">FlexFund</span>
+              <span className="text-2xl font-bold text-gray-900 tracking-tight">ditupetal</span>
             </div>
           )}
           <h2 className="text-2xl font-semibold text-gray-800">
