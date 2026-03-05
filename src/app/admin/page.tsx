@@ -55,7 +55,7 @@ interface DashboardMetrics {
   totalRevenue?: number;
 }
 
-// Metric Card Component with better styling
+// Metric Card Component with transparent icons
 const MetricCard: React.FC<MetricCardProps> = ({ 
   title, 
   value, 
@@ -68,9 +68,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
       <div className="flex items-start justify-between">
-        <div className={`p-4 rounded-xl ${color} ${bgColor}`}>
-          <div className={`text-${color.split('-')[1]}-600 text-2xl`}>{icon}</div>
-        </div>
+        {/* Removed background container, icon is now directly placed with just color */}
+        <div className={`text-${color.split('-')[1]}-600 text-3xl`}>{icon}</div>
         {trend !== undefined && (
           <div className={`flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
             trend >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -253,38 +252,38 @@ const AdminDashboard: React.FC = () => {
     };
   }, [supabase]);
 
-  // Better icons for each metric
+  // Icons with transparent backgrounds
   const metricCards = [
     {
       title: 'Total Products',
       value: metrics.totalProducts.toLocaleString(),
-      icon: <BsBoxSeam />,
-      color: 'bg-blue-500',
-      bgColor: 'bg-blue-50',
+      icon: <BsBoxSeam className="text-blue-500" />,
+      color: 'text-blue-500',
+      bgColor: 'transparent',
       trend: 12
     },
     {
       title: 'Product Categories',
       value: metrics.totalCategories.toLocaleString(),
-      icon: <FaLayerGroup />,
-      color: 'bg-orange-500',
-      bgColor: 'bg-orange-50',
+      icon: <FaLayerGroup className="text-orange-500" />,
+      color: 'text-orange-500',
+      bgColor: 'transparent',
       trend: 8
     },
     {
       title: 'Total Revenue',
       value: '$124.5k',
-      icon: <TbCurrencyDollar />,
-      color: 'bg-green-500',
-      bgColor: 'bg-green-50',
+      icon: <TbCurrencyDollar className="text-green-500" />,
+      color: 'text-green-500',
+      bgColor: 'transparent',
       trend: 18
     },
     {
       title: 'Active Customers',
       value: metrics.totalCustomers.toLocaleString(),
-      icon: <TbUsers />,
-      color: 'bg-purple-500',
-      bgColor: 'bg-purple-50',
+      icon: <TbUsers className="text-purple-500" />,
+      color: 'text-purple-500',
+      bgColor: 'transparent',
       trend: 24
     },
   ];
@@ -307,7 +306,7 @@ const AdminDashboard: React.FC = () => {
         {/* Welcome Section */}
         
 
-        {/* Metrics Grid with better icons */}
+        {/* Metrics Grid with transparent icons */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {metricCards.map((metric, index) => (
             <MetricCard 
@@ -318,12 +317,12 @@ const AdminDashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Quick Stats Cards */}
+        {/* Quick Stats Cards - keeping these backgrounds as they're gradient cards */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-500 rounded-lg">
-                <MdInventory className="text-white text-xl" />
+              <div className="text-blue-600 text-xl">
+                <MdInventory />
               </div>
               <div>
                 <p className="text-xs text-blue-700 font-medium">Low Stock Items</p>
@@ -334,8 +333,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-500 rounded-lg">
-                <FaShoppingBag className="text-white text-xl" />
+              <div className="text-green-600 text-xl">
+                <FaShoppingBag />
               </div>
               <div>
                 <p className="text-xs text-green-700 font-medium">Today's Orders</p>
@@ -346,8 +345,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-500 rounded-lg">
-                <FaUserFriends className="text-white text-xl" />
+              <div className="text-purple-600 text-xl">
+                <FaUserFriends />
               </div>
               <div>
                 <p className="text-xs text-purple-700 font-medium">New Customers</p>
@@ -358,8 +357,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-orange-500 rounded-lg">
-                <FaCreditCard className="text-white text-xl" />
+              <div className="text-orange-600 text-xl">
+                <FaCreditCard />
               </div>
               <div>
                 <p className="text-xs text-orange-700 font-medium">Pending Payments</p>
