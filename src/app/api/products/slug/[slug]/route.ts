@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -6,14 +6,21 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+type Context = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
 export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } }
+  request: NextRequest,
+  context: Context
 ) {
   try {
-    const { slug } = params;
+    // Await the params promise
+    const { slug } = await context.params;
 
-    console.log('Fetching product with slug:', slug); // Add logging for debugging
+    console.log('Fetching product with slug:', slug);
 
     const { data, error } = await supabase
       .from('products')
