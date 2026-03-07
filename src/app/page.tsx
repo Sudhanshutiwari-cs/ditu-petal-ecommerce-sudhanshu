@@ -341,7 +341,7 @@ function AboutSection() {
           {/* Description */}
           <div className="space-y-6 text-[#5a5a5a] leading-relaxed">
             <p>
-              At Luxe Bloom Boutique, we believe flowers are more than just botanical beauty—
+              At DituPetal, we believe flowers are more than just botanical beauty—
               they're messengers of the heart, carriers of emotion, and vessels of memory.
               Each arrangement we create is a poem written in petals.
             </p>
@@ -528,7 +528,7 @@ function ContactSection() {
           Let's Talk <span className="text-[#c4727e]">Flowers</span>
         </h1>
         <p className="text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed">
-          Come find us right in the heart of Bali! Our doors at Luxe Bloom Boutique are always open,
+          Come find us right in the heart of Bali! Our doors at DituPetal are always open,
           <br className="hidden md:block" />
           ready to welcome you with beautiful, fresh flowers.
         </p>
@@ -559,7 +559,7 @@ function ContactSection() {
                 <EmailIcon className="w-5 h-5 text-[#4a7c9b]" />
               </div>
               <h3 className="font-serif text-[#2d4a6b] font-medium mb-1">Email Us</h3>
-              <p className="text-[#6b6b6b] text-sm">luxebloomboutique26@gmail.com</p>
+              <p className="text-[#6b6b6b] text-sm">ditupetal26@gmail.com</p>
             </div>
 
             {/* Call or WhatsApp */}
@@ -701,10 +701,10 @@ function Footer() {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full border-2 border-[#d4c4b5] flex items-center justify-center">
-                <span className="text-[#d4c4b5] font-serif text-lg">B</span>
+                <span className="text-[#d4c4b5] font-serif text-lg">D</span>
               </div>
               <div>
-                <h2 className="text-white font-medium text-lg">Luxe Bloom</h2>
+                <h2 className="text-white font-medium text-lg">DituPetal</h2>
                 <p className="text-[#a89585] text-xs tracking-widest uppercase">
                   Boutique
                 </p>
@@ -874,10 +874,10 @@ function Footer() {
                   />
                 </svg>
                 <a
-                  href="mailto:luxebloomboutique26@gmail.com"
+                  href="mailto:ditupetal26@gmail.com"
                   className="text-[#a89585] text-sm hover:text-white transition-colors"
                 >
-                  luxebloomboutique26@gmail.com
+                  ditupetal26@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -910,7 +910,7 @@ function Footer() {
       <div className="border-t border-[#5a4545]">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#a89585] text-sm">
-            © 2026 Luxe Bloom Boutique. All rights reserved.
+            © 2026 DituPetal. All rights reserved.
           </p>
           <div className="flex gap-8">
             <a
