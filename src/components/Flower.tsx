@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 
 interface ImageWithPlaceholderProps {
   src: string
@@ -64,7 +63,7 @@ export default function FlowerSection() {
           {/* Soul Bloom - Top Left */}
           <div className="relative h-80 overflow-hidden rounded-2xl md:h-auto md:min-h-[300px]">
             <ImageWithPlaceholder
-              src="/images/soul-bloom.jpg"
+              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/banner-34.jpg"
               alt="Soul Bloom flower arrangement with pink roses and green foliage"
               className="h-full w-full object-cover"
               placeholderColor="bg-stone-300"
@@ -72,7 +71,7 @@ export default function FlowerSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent">
               <div className="flex h-full flex-col items-center justify-end pb-8 text-center">
                 <p className="mb-2 max-w-[250px] px-4 text-xs tracking-wide text-white/90 md:text-sm">
-                  Flowers Or Inflorescences Are The Parts
+                  Flowers Or Inflorescences Are The Partsx
                 </p>
                 <h3 className="font-serif text-3xl font-light italic text-white md:text-4xl">
                   Soul Bloom
@@ -84,7 +83,7 @@ export default function FlowerSection() {
           {/* Big Sale - Center (spans 2 rows) */}
           <div className="relative h-96 overflow-hidden rounded-2xl md:row-span-2 md:h-auto md:min-h-[620px]">
             <ImageWithPlaceholder
-              src="/images/big-sale.jpg"
+              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/banner-36.jpg"
               alt="Beautiful wrapped bouquet for big sale"
               className="h-full w-full object-cover"
               placeholderColor="bg-stone-400"
@@ -105,7 +104,7 @@ export default function FlowerSection() {
           {/* Nourish Your - Right (spans 2 rows) */}
           <div className="relative h-96 overflow-hidden rounded-2xl md:row-span-2 md:h-auto md:min-h-[620px]">
             <ImageWithPlaceholder
-              src="/images/nourish-your.jpg"
+              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/banner-37.jpg"
               alt="Elegant floral arrangement in white ceramic vase"
               className="h-full w-full object-cover"
               placeholderColor="bg-amber-100"
@@ -125,7 +124,7 @@ export default function FlowerSection() {
           {/* Soft Petals - Bottom Left */}
           <div className="relative h-80 overflow-hidden rounded-2xl md:h-auto md:min-h-[300px]">
             <ImageWithPlaceholder
-              src="/images/soft-petals.jpg"
+              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/banner-35.jpg"
               alt="Soft petals arrangement with flowers in vases"
               className="h-full w-full object-cover"
               placeholderColor="bg-amber-700"
