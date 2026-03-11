@@ -24,16 +24,16 @@ export default function AuthLayout({ children, title, subtitle, showLogo = true 
           {showLogo && (
             <div className="flex justify-center items-center gap-2 mb-4">
               <img 
-                src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/Black%20White%20Minimalist%20Beauty%20Typography%20Logo_20260302_154544_0000.png"
+                src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/Black_White_Minimalist_Beauty_Typography_Logo_20260302_154544_0000-removebg-preview.png"
                 alt="Ditupetal Logo"
-                className="w-8 h-8 object-contain"
+                className="w-15 h-15 object-contain"
                 onError={(e) => {
                   console.error('Logo failed to load');
                   // Fallback to a simple div if image fails
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <span className="text-2xl font-bold text-gray-900 tracking-tight">ditupetal</span>
+       
             </div>
           )}
           <h2 className="text-2xl font-semibold text-gray-800">
