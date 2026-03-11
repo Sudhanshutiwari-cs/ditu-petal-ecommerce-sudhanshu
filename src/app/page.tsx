@@ -715,14 +715,93 @@ function ContactSection() {
     phone: "",
     message: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' })
+  
+  const supabase = createClient()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    
+    // Validate form
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please fill in all required fields'
+      })
+      return
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please enter a valid email address'
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+    setSubmitStatus({ type: null, message: '' })
+
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            full_name: formData.fullName.trim(),
+            email: formData.email.trim().toLowerCase(),
+            phone: formData.phone.trim() || null, // Send null if empty
+            message: formData.message.trim(),
+            is_read: false,
+            created_at: new Date().toISOString(),
+          }
+        ])
+
+      if (error) {
+        console.error('Supabase error:', error)
+        throw new Error(error.message)
+      }
+
+      // Success - reset form and show success message
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        message: "",
+      })
+      
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you for your message! We\'ll get back to you soon.'
+      })
+
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus({ type: null, message: '' })
+      }, 5000)
+
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setSubmitStatus({
+        type: 'error',
+        message: 'Failed to send message. Please try again or contact us via WhatsApp.'
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+    // Clear status when user starts typing again
+    if (submitStatus.type === 'error') {
+      setSubmitStatus({ type: null, message: '' })
+    }
   }
 
   return (
@@ -798,7 +877,7 @@ function ContactSection() {
             </div>
             <p className="text-[#4a4a4a] font-medium mb-2">Interactive Map</p>
             <a
-              href="https://maps.google.com"
+              href="https://maps.google.com/?q=Jalan+Teuku+Umar+No.43+Denpasar+Barat"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#b4838a] text-sm hover:underline flex items-center gap-1"
@@ -815,66 +894,118 @@ function ContactSection() {
             Fill out the form below and we'll get back to you shortly.
           </p>
 
+          {/* Status Message */}
+          {submitStatus.type && (
+            <div
+              className={`mb-6 p-4 rounded-lg ${
+                submitStatus.type === 'success' 
+                  ? 'bg-green-50 text-green-800 border border-green-200' 
+                  : 'bg-red-50 text-red-800 border border-red-200'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                {submitStatus.type === 'success' ? (
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+                <p className="text-sm">{submitStatus.message}</p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Full Name */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+                Full Name <span className="text-red-400">*</span>
+              </label>
               <input
                 type="text"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="Your name"
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors"
+                required
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">Email Address</label>
+              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+                Email Address <span className="text-red-400">*</span>
+              </label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors"
+                required
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
             {/* Phone Number */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">Phone Number</label>
+              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+                Phone Number <span className="text-gray-400 text-xs">(optional)</span>
+              </label>
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="+62 878 2583 0959"
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors"
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
             {/* Your Message */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">Your Message</label>
+              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+                Your Message <span className="text-red-400">*</span>
+              </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Tell us about your flower needs..."
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors resize-none"
+                required
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#a67c7c] hover:bg-[#957070] text-white py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+              disabled={isSubmitting}
+              className="w-full bg-[#a67c7c] hover:bg-[#957070] text-white py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              <SendIcon className="w-4 h-4" />
-              Send Message
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <SendIcon className="w-4 h-4" />
+                  Send Message
+                </>
+              )}
             </button>
           </form>
 
@@ -882,7 +1013,7 @@ function ContactSection() {
           <div className="mt-6 text-center">
             <p className="text-[#6b6b6b] text-sm mb-3">Or contact us directly via WhatsApp</p>
             <a
-              href="https://wa.me/6287825830959"
+              href="https://wa.me/6287825830959?text=Hello%20DituPetal%2C%20I%20have%20a%20question%20about%20your%20flowers."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full py-3 border border-[#e5e5e5] rounded-lg text-[#6b6b6b] hover:border-[#b4838a] hover:text-[#b4838a] transition-colors"
