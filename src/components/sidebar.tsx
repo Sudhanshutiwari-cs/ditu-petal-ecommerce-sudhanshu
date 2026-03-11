@@ -166,7 +166,7 @@ export function Sidebar() {
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 relative">
             <img
-              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/Black%20White%20Minimalist%20Beauty%20Typography%20Logo_20260302_154544_0000.png"
+              src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/Black_White_Minimalist_Beauty_Typography_Logo_20260302_154544_0000-removebg-preview.png"
               alt="DituPetal Logo"
               className="w-full h-full object-contain"
             />
