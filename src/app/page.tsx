@@ -411,7 +411,7 @@ function CustomBouquetSection() {
     <section className="min-h-screen bg-[#faf8f5] flex items-center justify-center p-6 lg:p-12">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
         {/* Left Side - Image */}
-        <div className="relative">
+        <div className="relative order-2 lg:order-1">
           <div className="rounded-2xl overflow-hidden shadow-xl">
             <img
               src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/hnznvqczmm5.webp"
@@ -419,41 +419,42 @@ function CustomBouquetSection() {
               className="w-full h-auto object-cover"
             />
           </div>
-          {/* Custom Badge */}
-          <div className="absolute bottom-6 right-6 bg-[#c9b896] text-white px-4 py-3 rounded-lg shadow-lg">
+          {/* Custom Badge - Responsive positioning */}
+          <div className="absolute bottom-4 right-4 lg:bottom-6 lg:right-6 bg-[#c9b896] text-white px-3 py-2 lg:px-4 lg:py-3 rounded-lg shadow-lg">
             <div className="flex flex-col items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="lg:w-6 lg:h-6"
               >
                 <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
                 <path d="M10 2c1 .5 2 2 2 5" />
               </svg>
-              <span className="text-sm font-medium">Custom</span>
-              <span className="text-xs opacity-90">Made for You</span>
+              <span className="text-xs lg:text-sm font-medium">Custom</span>
+              <span className="text-[10px] lg:text-xs opacity-90">Made for You</span>
             </div>
           </div>
         </div>
 
         {/* Right Side - Content */}
-        <div className="space-y-6">
+        <div className="space-y-6 order-1 lg:order-2">
           <p className="text-[#d4736c] text-sm font-semibold tracking-widest uppercase">
             Bespoke Service
           </p>
 
-          <h1 className="text-4xl lg:text-5xl font-serif text-gray-900">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-serif text-gray-900">
             Order Your{" "}
             <span className="text-[#e8a0b4]">Custom Bouquet</span>
           </h1>
 
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-gray-600 leading-relaxed text-sm lg:text-base">
             {"Can't find exactly what you're looking for? Let our expert florists create a one-of-a-kind arrangement tailored to your vision, occasion, and budget. Every petal placed with purpose, every stem selected with care."}
           </p>
 
@@ -468,19 +469,19 @@ function CustomBouquetSection() {
                   {step.number}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{step.title}</h3>
-                  <p className="text-sm text-gray-500">{step.description}</p>
+                  <h3 className="font-semibold text-gray-900 text-sm lg:text-base">{step.title}</h3>
+                  <p className="text-xs lg:text-sm text-gray-500">{step.description}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {/* CTA Button */}
-          <button className="mt-6 inline-flex items-center gap-2 bg-[#c9b896] hover:bg-[#b8a785] text-white px-6 py-3 rounded-lg font-medium transition-colors">
+          <button className="mt-6 inline-flex items-center gap-2 bg-[#c9b896] hover:bg-[#b8a785] text-white px-5 py-2.5 lg:px-6 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -498,15 +499,16 @@ function CustomBouquetSection() {
       {/* WhatsApp Floating Button */}
       <a
         href="#"
-        className="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-lg transition-colors"
+        className="fixed bottom-6 right-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-lg transition-colors z-50"
         aria-label="Contact via WhatsApp"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          height="28"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="currentColor"
+          className="w-5 h-5 lg:w-6 lg:h-6"
         >
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
         </svg>
@@ -517,10 +519,10 @@ function CustomBouquetSection() {
 
 function AboutSection() {
   return (
-    <section className="min-h-screen bg-[#faf8f6] py-16 px-6 lg:px-16">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+    <section className="min-h-screen bg-[#faf8f6] py-12 px-4 lg:py-16 lg:px-16">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         {/* Left Content */}
-        <div className="space-y-8">
+        <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
           {/* About Us Label */}
           <div className="flex items-center gap-2 text-[#9b8579]">
             <svg
@@ -536,16 +538,16 @@ function AboutSection() {
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
-            <span className="text-sm font-medium tracking-wider uppercase">About Us</span>
+            <span className="text-xs lg:text-sm font-medium tracking-wider uppercase">About Us</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl lg:text-5xl font-serif text-[#3d3d3d]">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-serif text-[#3d3d3d]">
             Where Poetry Meets <span className="text-[#c4a07a] italic">Petals</span>
           </h1>
 
           {/* Description */}
-          <div className="space-y-6 text-[#5a5a5a] leading-relaxed">
+          <div className="space-y-4 text-[#5a5a5a] leading-relaxed text-sm lg:text-base">
             <p>
               At DituPetal, we believe flowers are more than just botanical beauty—
               they're messengers of the heart, carriers of emotion, and vessels of memory.
@@ -559,97 +561,100 @@ function AboutSection() {
             </p>
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid grid-cols-3 gap-4 pt-4">
+          {/* Feature Cards - Responsive grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
             {/* Crafted with Love */}
-            <div className="bg-[#fdf5f3] rounded-xl p-6 text-center">
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
+            <div className="bg-[#fdf5f3] rounded-xl p-4 lg:p-6 text-center">
+              <div className="flex justify-center mb-3 lg:mb-4">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
                   <svg
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#c4a07a"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    className="lg:w-6 lg:h-6"
                   >
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-[#c4a07a] font-medium text-sm mb-2">Crafted with Love</h3>
-              <p className="text-[#7a7a7a] text-xs leading-relaxed">
+              <h3 className="text-[#c4a07a] font-medium text-xs lg:text-sm mb-1 lg:mb-2">Crafted with Love</h3>
+              <p className="text-[#7a7a7a] text-[10px] lg:text-xs leading-relaxed">
                 Every stem placed with intention
               </p>
             </div>
 
             {/* Sustainably Sourced */}
-            <div className="bg-[#f5f9f7] rounded-xl p-6 text-center">
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
+            <div className="bg-[#f5f9f7] rounded-xl p-4 lg:p-6 text-center">
+              <div className="flex justify-center mb-3 lg:mb-4">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
                   <svg
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#7a9b8a"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    className="lg:w-6 lg:h-6"
                   >
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-[#7a9b8a] font-medium text-sm mb-2">Sustainably Sourced</h3>
-              <p className="text-[#7a7a7a] text-xs leading-relaxed">
+              <h3 className="text-[#7a9b8a] font-medium text-xs lg:text-sm mb-1 lg:mb-2">Sustainably Sourced</h3>
+              <p className="text-[#7a7a7a] text-[10px] lg:text-xs leading-relaxed">
                 Local farms, ethical practices
               </p>
             </div>
 
             {/* Artisan Quality */}
-            <div className="bg-[#fdf8f3] rounded-xl p-6 text-center">
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
+            <div className="bg-[#fdf8f3] rounded-xl p-4 lg:p-6 text-center">
+              <div className="flex justify-center mb-3 lg:mb-4">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
                   <svg
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#c9a86c"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    className="lg:w-6 lg:h-6"
                   >
                     <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-[#c9a86c] font-medium text-sm mb-2">Artisan Quality</h3>
-              <p className="text-[#7a7a7a] text-xs leading-relaxed">
+              <h3 className="text-[#c9a86c] font-medium text-xs lg:text-sm mb-1 lg:mb-2">Artisan Quality</h3>
+              <p className="text-[#7a7a7a] text-[10px] lg:text-xs leading-relaxed">
                 Expert florists, premium blooms
               </p>
             </div>
           </div>
 
           {/* CTA Button */}
-          <button className="mt-6 px-8 py-3 bg-[#fdf5f3] text-[#c4a07a] rounded-full font-medium hover:bg-[#fbeee9] transition-colors">
+          <button className="mt-4 lg:mt-6 px-6 lg:px-8 py-2.5 lg:py-3 bg-[#fdf5f3] text-[#c4a07a] rounded-full font-medium hover:bg-[#fbeee9] transition-colors text-sm lg:text-base">
             Discover Our Story
           </button>
         </div>
 
         {/* Right Content - Image Grid */}
-        <div className="relative">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="relative order-1 lg:order-2 mb-8 lg:mb-0">
+          <div className="grid grid-cols-2 gap-2 lg:gap-4">
             {/* Top Left - Large Image */}
             <div className="row-span-2">
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG20251213170623.png"
                 alt="Pink roses and gerbera bouquet"
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-cover rounded-xl lg:rounded-2xl"
               />
             </div>
 
@@ -658,7 +663,7 @@ function AboutSection() {
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG20251217142845%20(1).png"
                 alt="Colorful mixed flower bouquet"
-                className="w-full h-48 object-cover rounded-2xl"
+                className="w-full h-32 lg:h-48 object-cover rounded-xl lg:rounded-2xl"
               />
             </div>
 
@@ -667,37 +672,37 @@ function AboutSection() {
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG_53431.webp"
                 alt="Red roses bouquet"
-                className="w-full h-64 object-cover rounded-2xl"
+                className="w-full h-40 lg:h-64 object-cover rounded-xl lg:rounded-2xl"
               />
             </div>
 
             {/* Bottom Left Image */}
-            <div className="col-span-1 -mt-20">
+            <div className="col-span-1 -mt-10 lg:-mt-20">
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG_52101.webp"
                 alt="White roses bouquet"
-                className="w-full h-72 object-cover rounded-2xl"
+                className="w-full h-48 lg:h-72 object-cover rounded-xl lg:rounded-2xl"
               />
             </div>
           </div>
 
-          {/* Stats Bar */}
-          <div className="absolute bottom-8 right-0 bg-[#4a3f3a] rounded-xl px-8 py-4 flex items-center gap-6">
-            <div className="text-center pr-6 border-r border-[#6a5f5a]">
-              <div className="text-[#c9a86c] text-xl font-semibold">
-                5<sup className="text-xs">+</sup>
+          {/* Stats Bar - Responsive positioning */}
+          <div className="absolute -bottom-6 lg:bottom-8 right-0 left-0 lg:left-auto bg-[#4a3f3a] rounded-xl px-4 lg:px-8 py-3 lg:py-4 flex items-center justify-around lg:justify-start gap-3 lg:gap-6 mx-4 lg:mx-0">
+            <div className="text-center pr-3 lg:pr-6 border-r border-[#6a5f5a]">
+              <div className="text-[#c9a86c] text-base lg:text-xl font-semibold">
+                5<sup className="text-[10px] lg:text-xs">+</sup>
               </div>
-              <div className="text-white text-xs">Years</div>
+              <div className="text-white text-[10px] lg:text-xs">Years</div>
             </div>
-            <div className="text-center pr-6 border-r border-[#6a5f5a]">
-              <div className="text-white text-xl font-semibold">5000+</div>
-              <div className="text-white text-xs">
+            <div className="text-center pr-3 lg:pr-6 border-r border-[#6a5f5a]">
+              <div className="text-white text-base lg:text-xl font-semibold">5000+</div>
+              <div className="text-white text-[10px] lg:text-xs">
                 Happy<br />Clients
               </div>
             </div>
             <div className="text-center">
-              <div className="text-white text-xl font-semibold">100%</div>
-              <div className="text-white text-xs">
+              <div className="text-white text-base lg:text-xl font-semibold">100%</div>
+              <div className="text-white text-[10px] lg:text-xs">
                 Fresh<br />Daily
               </div>
             </div>
@@ -805,14 +810,14 @@ function ContactSection() {
   }
 
   return (
-    <section className="min-h-screen bg-[#fdf9f6] py-16 px-4">
+    <section className="min-h-screen bg-[#fdf9f6] py-12 lg:py-16 px-4">
       {/* Header Section */}
-      <div className="text-center mb-12">
-        <p className="text-[#b4838a] text-sm tracking-[0.2em] uppercase mb-3">Get In Touch</p>
-        <h1 className="font-serif text-4xl md:text-5xl text-[#2d2d2d] mb-4">
+      <div className="text-center mb-8 lg:mb-12">
+        <p className="text-[#b4838a] text-xs lg:text-sm tracking-[0.2em] uppercase mb-2 lg:mb-3">Get In Touch</p>
+        <h1 className="font-serif text-3xl lg:text-4xl xl:text-5xl text-[#2d2d2d] mb-3 lg:mb-4">
           Let's Talk <span className="text-[#c4727e]">Flowers</span>
         </h1>
-        <p className="text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed">
+        <p className="text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed text-sm lg:text-base px-4">
           Come find us right in the heart of Bali! Our doors at DituPetal are always open,
           <br className="hidden md:block" />
           ready to welcome you with beautiful, fresh flowers.
@@ -820,18 +825,18 @@ function ContactSection() {
       </div>
 
       {/* Content Grid */}
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Left Column - Contact Info & Map */}
         <div className="space-y-6">
           {/* Contact Cards Grid */}
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Visit Our Boutique */}
-            <div className="bg-[#faf6f2] rounded-xl p-5">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
-                <LocationIcon className="w-5 h-5 text-[#b4838a]" />
+            <div className="bg-[#faf6f2] rounded-xl p-4 lg:p-5">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-lg flex items-center justify-center mb-2 lg:mb-3 shadow-sm">
+                <LocationIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#b4838a]" />
               </div>
-              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1">Visit Our Boutique</h3>
-              <p className="text-[#6b6b6b] text-sm leading-relaxed">
+              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1 text-sm lg:text-base">Visit Our Boutique</h3>
+              <p className="text-[#6b6b6b] text-xs lg:text-sm leading-relaxed">
                 Jalan Teuku Umar No.43
                 <br />
                 Denpasar Barat
@@ -839,30 +844,30 @@ function ContactSection() {
             </div>
 
             {/* Email Us */}
-            <div className="bg-[#faf6f2] rounded-xl p-5">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
-                <EmailIcon className="w-5 h-5 text-[#4a7c9b]" />
+            <div className="bg-[#faf6f2] rounded-xl p-4 lg:p-5">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-lg flex items-center justify-center mb-2 lg:mb-3 shadow-sm">
+                <EmailIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#4a7c9b]" />
               </div>
-              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1">Email Us</h3>
-              <p className="text-[#6b6b6b] text-sm">ditupetal26@gmail.com</p>
+              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1 text-sm lg:text-base">Email Us</h3>
+              <p className="text-[#6b6b6b] text-xs lg:text-sm break-all">ditupetal26@gmail.com</p>
             </div>
 
             {/* Call or WhatsApp */}
-            <div className="bg-[#faf6f2] rounded-xl p-5">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
-                <PhoneIcon className="w-5 h-5 text-[#7ba67b]" />
+            <div className="bg-[#faf6f2] rounded-xl p-4 lg:p-5">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-lg flex items-center justify-center mb-2 lg:mb-3 shadow-sm">
+                <PhoneIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#7ba67b]" />
               </div>
-              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1">Call or WhatsApp</h3>
-              <p className="text-[#6b6b6b] text-sm">+62 878 2583 0959</p>
+              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1 text-sm lg:text-base">Call or WhatsApp</h3>
+              <p className="text-[#6b6b6b] text-xs lg:text-sm">+62 878 2583 0959</p>
             </div>
 
             {/* Opening Hours */}
-            <div className="bg-[#faf6f2] rounded-xl p-5">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm">
-                <ClockIcon className="w-5 h-5 text-[#c4a35a]" />
+            <div className="bg-[#faf6f2] rounded-xl p-4 lg:p-5">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-lg flex items-center justify-center mb-2 lg:mb-3 shadow-sm">
+                <ClockIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#c4a35a]" />
               </div>
-              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1">Opening Hours</h3>
-              <p className="text-[#6b6b6b] text-sm">
+              <h3 className="font-serif text-[#2d4a6b] font-medium mb-1 text-sm lg:text-base">Opening Hours</h3>
+              <p className="text-[#6b6b6b] text-xs lg:text-sm">
                 Open 24/7
                 <br />
                 Always ready to serve you
@@ -871,16 +876,16 @@ function ContactSection() {
           </div>
 
           {/* Map Section */}
-          <div className="bg-[#e8e4e0] rounded-2xl p-8 flex flex-col items-center justify-center min-h-[250px]">
-            <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center mb-4">
-              <LocationIcon className="w-6 h-6 text-[#b4838a]" />
+          <div className="bg-[#e8e4e0] rounded-xl lg:rounded-2xl p-6 lg:p-8 flex flex-col items-center justify-center min-h-[200px] lg:min-h-[250px]">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/80 rounded-full flex items-center justify-center mb-3 lg:mb-4">
+              <LocationIcon className="w-5 h-5 lg:w-6 lg:h-6 text-[#b4838a]" />
             </div>
-            <p className="text-[#4a4a4a] font-medium mb-2">Interactive Map</p>
+            <p className="text-[#4a4a4a] font-medium mb-2 text-sm lg:text-base">Interactive Map</p>
             <a
               href="https://maps.google.com/?q=Jalan+Teuku+Umar+No.43+Denpasar+Barat"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#b4838a] text-sm hover:underline flex items-center gap-1"
+              className="text-[#b4838a] text-xs lg:text-sm hover:underline flex items-center gap-1"
             >
               Open in Google Maps <span>→</span>
             </a>
@@ -888,16 +893,16 @@ function ContactSection() {
         </div>
 
         {/* Right Column - Contact Form */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm">
-          <h2 className="font-serif text-xl text-[#2d2d2d] mb-2">Send Us a Message</h2>
-          <p className="text-[#6b6b6b] text-sm mb-6">
+        <div className="bg-white rounded-xl lg:rounded-2xl p-5 lg:p-8 shadow-sm">
+          <h2 className="font-serif text-lg lg:text-xl text-[#2d2d2d] mb-1 lg:mb-2">Send Us a Message</h2>
+          <p className="text-[#6b6b6b] text-xs lg:text-sm mb-4 lg:mb-6">
             Fill out the form below and we'll get back to you shortly.
           </p>
 
           {/* Status Message */}
           {submitStatus.type && (
             <div
-              className={`mb-6 p-4 rounded-lg ${
+              className={`mb-4 lg:mb-6 p-3 lg:p-4 rounded-lg ${
                 submitStatus.type === 'success' 
                   ? 'bg-green-50 text-green-800 border border-green-200' 
                   : 'bg-red-50 text-red-800 border border-red-200'
@@ -905,23 +910,23 @@ function ContactSection() {
             >
               <div className="flex items-center gap-2">
                 {submitStatus.type === 'success' ? (
-                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 lg:w-5 lg:h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 lg:w-5 lg:h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 )}
-                <p className="text-sm">{submitStatus.message}</p>
+                <p className="text-xs lg:text-sm">{submitStatus.message}</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-5">
             {/* Full Name */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+              <label className="block text-[#2d2d2d] text-xs lg:text-sm font-medium mb-1 lg:mb-2">
                 Full Name <span className="text-red-400">*</span>
               </label>
               <input
@@ -932,13 +937,13 @@ function ContactSection() {
                 placeholder="Your name"
                 required
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
               />
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+              <label className="block text-[#2d2d2d] text-xs lg:text-sm font-medium mb-1 lg:mb-2">
                 Email Address <span className="text-red-400">*</span>
               </label>
               <input
@@ -949,14 +954,14 @@ function ContactSection() {
                 placeholder="your@email.com"
                 required
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
               />
             </div>
 
             {/* Phone Number */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
-                Phone Number <span className="text-gray-400 text-xs">(optional)</span>
+              <label className="block text-[#2d2d2d] text-xs lg:text-sm font-medium mb-1 lg:mb-2">
+                Phone Number <span className="text-gray-400 text-[10px] lg:text-xs">(optional)</span>
               </label>
               <input
                 type="tel"
@@ -965,13 +970,13 @@ function ContactSection() {
                 onChange={handleChange}
                 placeholder="+62 878 2583 0959"
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
               />
             </div>
 
             {/* Your Message */}
             <div>
-              <label className="block text-[#2d2d2d] text-sm font-medium mb-2">
+              <label className="block text-[#2d2d2d] text-xs lg:text-sm font-medium mb-1 lg:mb-2">
                 Your Message <span className="text-red-400">*</span>
               </label>
               <textarea
@@ -982,7 +987,7 @@ function ContactSection() {
                 rows={4}
                 required
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg border border-[#e5e5e5] bg-[#fdfbf9] text-[#2d2d2d] placeholder:text-[#a0a0a0] focus:outline-none focus:border-[#b4838a] transition-colors resize-none disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
               />
             </div>
 
@@ -990,7 +995,7 @@ function ContactSection() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#a67c7c] hover:bg-[#957070] text-white py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-[#a67c7c] hover:bg-[#957070] text-white py-3 lg:py-3.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
             >
               {isSubmitting ? (
                 <>
@@ -1010,15 +1015,15 @@ function ContactSection() {
           </form>
 
           {/* WhatsApp Alternative */}
-          <div className="mt-6 text-center">
-            <p className="text-[#6b6b6b] text-sm mb-3">Or contact us directly via WhatsApp</p>
+          <div className="mt-4 lg:mt-6 text-center">
+            <p className="text-[#6b6b6b] text-xs lg:text-sm mb-2 lg:mb-3">Or contact us directly via WhatsApp</p>
             <a
               href="https://wa.me/6287825830959?text=Hello%20DituPetal%2C%20I%20have%20a%20question%20about%20your%20flowers."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 w-full py-3 border border-[#e5e5e5] rounded-lg text-[#6b6b6b] hover:border-[#b4838a] hover:text-[#b4838a] transition-colors"
+              className="inline-flex items-center justify-center gap-2 w-full py-2.5 lg:py-3 border border-[#e5e5e5] rounded-lg text-[#6b6b6b] hover:border-[#b4838a] hover:text-[#b4838a] transition-colors text-sm"
             >
-              <WhatsAppIcon className="w-4 h-4" />
+              <WhatsAppIcon className="w-3 h-3 lg:w-4 lg:h-4" />
               Chat on WhatsApp
             </a>
           </div>
@@ -1032,99 +1037,102 @@ function Footer() {
   return (
     <footer className="bg-[#3d2a2a] text-[#d4c4b5]">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-8 lg:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
           {/* Brand Section */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full border-2 border-[#d4c4b5] flex items-center justify-center">
-                <span className="text-[#d4c4b5] font-serif text-lg">D</span>
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 border-[#d4c4b5] flex items-center justify-center">
+                <span className="text-[#d4c4b5] font-serif text-base lg:text-lg">D</span>
               </div>
               <div>
-                <h2 className="text-white font-medium text-lg">DituPetal</h2>
-                <p className="text-[#a89585] text-xs tracking-widest uppercase">
+                <h2 className="text-white font-medium text-base lg:text-lg">DituPetal</h2>
+                <p className="text-[#a89585] text-[10px] lg:text-xs tracking-widest uppercase">
                   Boutique
                 </p>
               </div>
             </div>
-            <p className="text-[#a89585] text-sm leading-relaxed">
+            <p className="text-[#a89585] text-xs lg:text-sm leading-relaxed">
               From the heart of the city, we pour passion into every petal,
               crafting beautiful floral stories for every occasion. Your
               cherished local flower shop, dedicated to delivering fresh beauty
               and joy, around the clock.
             </p>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#5a4545] flex items-center justify-center hover:bg-[#6a5555] transition-colors"
-              >
-                <svg
-                  className="w-5 h-5 text-[#d4c4b5]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            <div className="flex gap-2 lg:gap-3">
+              {[
+                { href: "#", icon: "comment" },
+                { href: "#", icon: "instagram" },
+                { href: "#", icon: "location" },
+              ].map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#5a4545] flex items-center justify-center hover:bg-[#6a5555] transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#5a4545] flex items-center justify-center hover:bg-[#6a5555] transition-colors"
-              >
-                <svg
-                  className="w-5 h-5 text-[#d4c4b5]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <rect
-                    x="2"
-                    y="2"
-                    width="20"
-                    height="20"
-                    rx="5"
-                    strokeWidth={1.5}
-                  />
-                  <circle cx="12" cy="12" r="4" strokeWidth={1.5} />
-                  <circle cx="18" cy="6" r="1" fill="currentColor" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#5a4545] flex items-center justify-center hover:bg-[#6a5555] transition-colors"
-              >
-                <svg
-                  className="w-5 h-5 text-[#d4c4b5]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </a>
+                  {social.icon === "comment" && (
+                    <svg
+                      className="w-4 h-4 lg:w-5 lg:h-5 text-[#d4c4b5]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                  )}
+                  {social.icon === "instagram" && (
+                    <svg
+                      className="w-4 h-4 lg:w-5 lg:h-5 text-[#d4c4b5]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect
+                        x="2"
+                        y="2"
+                        width="20"
+                        height="20"
+                        rx="5"
+                        strokeWidth={1.5}
+                      />
+                      <circle cx="12" cy="12" r="4" strokeWidth={1.5} />
+                      <circle cx="18" cy="6" r="1" fill="currentColor" />
+                    </svg>
+                  )}
+                  {social.icon === "location" && (
+                    <svg
+                      className="w-4 h-4 lg:w-5 lg:h-5 text-[#d4c4b5]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  )}
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Shop Links */}
           <div>
-            <h3 className="text-white font-medium text-lg mb-6">Shop</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-medium text-base lg:text-lg mb-4 lg:mb-6">Shop</h3>
+            <ul className="space-y-2 lg:space-y-3">
               {[
                 "All Bouquets",
                 "Artificial Bouquets",
@@ -1135,7 +1143,7 @@ function Footer() {
                 <li key={item}>
                   <a
                     href="#"
-                    className="text-[#a89585] hover:text-white transition-colors text-sm"
+                    className="text-[#a89585] hover:text-white transition-colors text-xs lg:text-sm"
                   >
                     {item}
                   </a>
@@ -1146,8 +1154,8 @@ function Footer() {
 
           {/* Services Links */}
           <div>
-            <h3 className="text-white font-medium text-lg mb-6">Services</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-medium text-base lg:text-lg mb-4 lg:mb-6">Services</h3>
+            <ul className="space-y-2 lg:space-y-3">
               {[
                 "Our Services",
                 "Custom Bouquet",
@@ -1157,7 +1165,7 @@ function Footer() {
                 <li key={item}>
                   <a
                     href="#"
-                    className="text-[#a89585] hover:text-white transition-colors text-sm"
+                    className="text-[#a89585] hover:text-white transition-colors text-xs lg:text-sm"
                   >
                     {item}
                   </a>
@@ -1168,11 +1176,11 @@ function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-medium text-lg mb-6">Contact</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
+            <h3 className="text-white font-medium text-base lg:text-lg mb-4 lg:mb-6">Contact</h3>
+            <ul className="space-y-3 lg:space-y-4">
+              <li className="flex items-start gap-2 lg:gap-3">
                 <svg
-                  className="w-5 h-5 text-[#a89585] mt-0.5 flex-shrink-0"
+                  className="w-4 h-4 lg:w-5 lg:h-5 text-[#a89585] mt-0.5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1190,15 +1198,15 @@ function Footer() {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span className="text-[#a89585] text-sm">
+                <span className="text-[#a89585] text-xs lg:text-sm">
                   Jalan Teuku Umar No.43,
                   <br />
                   Denpasar Barat
                 </span>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center gap-2 lg:gap-3">
                 <svg
-                  className="w-5 h-5 text-[#a89585] flex-shrink-0"
+                  className="w-4 h-4 lg:w-5 lg:h-5 text-[#a89585] flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1212,14 +1220,14 @@ function Footer() {
                 </svg>
                 <a
                   href="mailto:ditupetal26@gmail.com"
-                  className="text-[#a89585] text-sm hover:text-white transition-colors"
+                  className="text-[#a89585] text-xs lg:text-sm hover:text-white transition-colors break-all"
                 >
                   ditupetal26@gmail.com
                 </a>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center gap-2 lg:gap-3">
                 <svg
-                  className="w-5 h-5 text-[#a89585] flex-shrink-0"
+                  className="w-4 h-4 lg:w-5 lg:h-5 text-[#a89585] flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1233,7 +1241,7 @@ function Footer() {
                 </svg>
                 <a
                   href="tel:+6287825830959"
-                  className="text-[#a89585] text-sm hover:text-white transition-colors"
+                  className="text-[#a89585] text-xs lg:text-sm hover:text-white transition-colors"
                 >
                   +62 878 2583 0959
                 </a>
@@ -1245,20 +1253,20 @@ function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-[#5a4545]">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[#a89585] text-sm">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4 lg:py-5 flex flex-col md:flex-row justify-between items-center gap-3 lg:gap-4">
+          <p className="text-[#a89585] text-xs lg:text-sm text-center md:text-left">
             © 2026 DituPetal. All rights reserved.
           </p>
-          <div className="flex gap-8">
+          <div className="flex gap-4 lg:gap-8">
             <a
               href="#"
-              className="text-[#a89585] text-sm hover:text-white transition-colors"
+              className="text-[#a89585] text-xs lg:text-sm hover:text-white transition-colors"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-[#a89585] text-sm hover:text-white transition-colors"
+              className="text-[#a89585] text-xs lg:text-sm hover:text-white transition-colors"
             >
               Terms of Service
             </a>
@@ -1489,7 +1497,7 @@ export default function HeroSlider() {
       {/* Fixed Navigation Bar with ref */}
       <nav 
         ref={navbarRef}
-        className="fixed top-0 left-0 right-0 z-50 px-8 py-6 lg:px-16"
+        className="fixed top-0 left-0 right-0 z-50 px-4 py-4 lg:px-8 lg:py-6"
       >
         {/* Blur background overlay */}
         <div 
@@ -1499,12 +1507,12 @@ export default function HeroSlider() {
         
         <div className="relative mx-auto flex max-w-[1800px] items-center justify-between">
           {/* Logo - Updated to DituPetal */}
-          <Link href="/" className="text-2xl font-light tracking-widest text-white">
+          <Link href="/" className="text-xl lg:text-2xl font-light tracking-widest text-white">
             DITU<span className="font-serif text-[#c9a227]">PETAL</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center space-x-12 lg:flex">
+          <div className="hidden items-center space-x-8 lg:flex">
             <Link href="/" className="text-sm tracking-wide text-white/90 transition-colors hover:text-white">
               Home
             </Link>
@@ -1548,7 +1556,7 @@ export default function HeroSlider() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="relative z-50 flex h-10 w-10 flex-col items-center justify-center space-y-1.5 lg:hidden"
+            className="relative z-50 flex h-8 w-8 lg:hidden flex-col items-center justify-center space-y-1.5"
             aria-label="Toggle menu"
           >
             <span
@@ -1576,39 +1584,39 @@ export default function HeroSlider() {
           }`}
           style={{ backgroundColor: `${slide.backgroundColor}CC` }}
         >
-          <div className="flex flex-col items-center space-y-8">
+          <div className="flex flex-col items-center space-y-6">
             <Link
               href="/"
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl tracking-wide text-white/90 transition-colors hover:text-white"
+              className="text-xl tracking-wide text-white/90 transition-colors hover:text-white"
             >
               Home
             </Link>
             <Link
-              href="/shop"
+              href="/bouquets"
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl tracking-wide text-white/90 transition-colors hover:text-white"
+              className="text-xl tracking-wide text-white/90 transition-colors hover:text-white"
             >
-              Shop
+              Bouquets
             </Link>
             <Link
-              href="/collections"
+              href="/hampers"
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl tracking-wide text-white/90 transition-colors hover:text-white"
+              className="text-xl tracking-wide text-white/90 transition-colors hover:text-white"
             >
-              Collections
+              Hampers
             </Link>
             <Link
               href="/about"
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl tracking-wide text-white/90 transition-colors hover:text-white"
+              className="text-xl tracking-wide text-white/90 transition-colors hover:text-white"
             >
               About
             </Link>
             <Link
               href="/contact"
               onClick={() => setIsMenuOpen(false)}
-              className="text-2xl tracking-wide text-white/90 transition-colors hover:text-white"
+              className="text-xl tracking-wide text-white/90 transition-colors hover:text-white"
             >
               Contact
             </Link>
@@ -1649,39 +1657,39 @@ export default function HeroSlider() {
           </svg>
         </div>
 
-        <div className="relative mx-auto flex min-h-screen max-w-[1800px] items-center px-8 lg:px-16">
-          {/* Left navigation arrow */}
+        <div className="relative mx-auto flex min-h-screen max-w-[1800px] items-center px-4 lg:px-8">
+          {/* Left navigation arrow - hidden on mobile, visible on larger screens */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-dashed border-white/40 transition-all duration-300 hover:border-white/70 hover:bg-white/10 lg:left-8"
+            className="hidden md:flex absolute left-2 md:left-4 top-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 -translate-y-1/2 items-center justify-center rounded-full border border-dashed border-white/40 transition-all duration-300 hover:border-white/70 hover:bg-white/10"
             aria-label="Previous slide"
           >
             <svg
-              width="20"
-              height="20"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className="text-white"
+              className="text-white md:w-5 md:h-5"
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </button>
 
           {/* Main content */}
-          <div className="flex w-full items-center justify-between gap-8">
+          <div className="flex w-full flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
             {/* Left content */}
-            <div className="z-10 max-w-xl pl-8 lg:pl-16">
+            <div className="z-10 max-w-xl text-center lg:text-left px-4 lg:px-16 order-2 lg:order-1">
               <p
-                className="mb-8 max-w-sm text-sm leading-relaxed tracking-wide text-white/80 transition-opacity duration-500"
+                className="mb-4 lg:mb-8 max-w-sm mx-auto lg:mx-0 text-xs lg:text-sm leading-relaxed tracking-wide text-white/80 transition-opacity duration-500"
                 style={{ opacity: isTransitioning ? 0 : 1 }}
               >
                 {slide.description}
               </p>
 
               <h1
-                className="mb-10 font-serif text-4xl leading-tight tracking-wide text-white transition-opacity duration-500 md:text-5xl lg:text-6xl"
+                className="mb-6 lg:mb-10 font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight tracking-wide text-white transition-opacity duration-500"
                 style={{ opacity: isTransitioning ? 0 : 1 }}
               >
                 {slide.heading.map((line, i) => (
@@ -1691,10 +1699,10 @@ export default function HeroSlider() {
                 ))}
               </h1>
 
-              <button className="group flex items-center gap-0 overflow-hidden rounded-full bg-white/90 pr-1 transition-all duration-300 hover:bg-white">
-                <span className="px-6 py-3 text-sm font-medium tracking-wide text-gray-800">Shop Now</span>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#c9a227] transition-transform duration-300 group-hover:rotate-45">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <button className="group inline-flex items-center gap-0 overflow-hidden rounded-full bg-white/90 pr-1 transition-all duration-300 hover:bg-white">
+                <span className="px-4 lg:px-6 py-2 lg:py-3 text-xs lg:text-sm font-medium tracking-wide text-gray-800">Shop Now</span>
+                <span className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-[#c9a227] transition-transform duration-300 group-hover:rotate-45">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="lg:w-4 lg:h-4">
                     <path d="M7 17L17 7M17 7H7M17 7v10" />
                   </svg>
                 </span>
@@ -1702,9 +1710,9 @@ export default function HeroSlider() {
             </div>
 
             {/* Center image */}
-            <div className="relative flex flex-1 items-center justify-center">
+            <div className="relative flex flex-1 items-center justify-center order-1 lg:order-2 mt-8 lg:mt-0">
               <div
-                className="relative h-[500px] w-[350px] overflow-hidden rounded-[175px] border-4 border-white/20 transition-all duration-500 md:h-[550px] md:w-[380px] lg:h-[600px] lg:w-[420px]"
+                className="relative h-[300px] w-[250px] sm:h-[400px] sm:w-[300px] md:h-[500px] md:w-[350px] lg:h-[550px] lg:w-[380px] xl:h-[600px] xl:w-[420px] overflow-hidden rounded-[125px] sm:rounded-[150px] md:rounded-[175px] border-4 border-white/20 transition-all duration-500"
                 style={{
                   opacity: isTransitioning ? 0.5 : 1,
                   transform: isTransitioning ? "scale(0.95)" : "scale(1)",
@@ -1717,8 +1725,8 @@ export default function HeroSlider() {
                 />
               </div>
 
-              {/* Decorative flowers outside frame */}
-              <div className="absolute -right-4 -top-8 h-24 w-24 opacity-80">
+              {/* Decorative flowers outside frame - hidden on mobile */}
+              <div className="hidden lg:block absolute -right-4 -top-8 h-24 w-24 opacity-80">
                 <svg viewBox="0 0 100 100" className="h-full w-full text-yellow-400/60">
                   <circle cx="50" cy="30" r="6" fill="currentColor" />
                   <circle cx="35" cy="45" r="5" fill="currentColor" />
@@ -1728,8 +1736,8 @@ export default function HeroSlider() {
               </div>
             </div>
 
-            {/* Right side vertical text */}
-            <div className="hidden items-center gap-8 lg:flex">
+            {/* Right side vertical text - hidden on mobile, visible on desktop */}
+            <div className="hidden lg:flex items-center gap-8">
               <p
                 className="text-xs uppercase tracking-[0.3em] text-white/60"
                 style={{
@@ -1741,7 +1749,7 @@ export default function HeroSlider() {
               </p>
 
               <h2
-                className="font-serif text-8xl font-light tracking-wider text-white/10 xl:text-9xl"
+                className="font-serif text-6xl xl:text-8xl font-light tracking-wider text-white/10"
                 style={{
                   writingMode: "vertical-rl",
                   textOrientation: "mixed",
@@ -1752,34 +1760,34 @@ export default function HeroSlider() {
             </div>
           </div>
 
-          {/* Right navigation arrow */}
+          {/* Right navigation arrow - hidden on mobile, visible on larger screens */}
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-dashed border-white/40 transition-all duration-300 hover:border-white/70 hover:bg-white/10 lg:right-8"
+            className="hidden md:flex absolute right-2 md:right-4 top-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 -translate-y-1/2 items-center justify-center rounded-full border border-dashed border-white/40 transition-all duration-300 hover:border-white/70 hover:bg-white/10"
             aria-label="Next slide"
           >
             <svg
-              width="20"
-              height="20"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className="text-white"
+              className="text-white md:w-5 md:h-5"
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
         </div>
 
-        {/* Slide indicators */}
-        <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
+        {/* Slide indicators - mobile friendly */}
+        <div className="absolute bottom-4 lg:bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2 lg:gap-3">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide ? "w-8 bg-white" : "w-2 bg-white/40 hover:bg-white/60"
+              className={`h-1.5 lg:h-2 rounded-full transition-all duration-300 ${
+                index === currentSlide ? "w-6 lg:w-8 bg-white" : "w-1.5 lg:w-2 bg-white/40 hover:bg-white/60"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
