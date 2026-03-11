@@ -455,7 +455,7 @@ export default function AddProductPage() {
       
       // Redirect to products list after a short delay
       setTimeout(() => {
-        router.push('/admin/products');
+        router.push('/admin/product');
         router.refresh();
       }, 1500);
       
@@ -475,7 +475,7 @@ export default function AddProductPage() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
           <Link
-            href="/admin/products"
+            href="/admin/product"
             className="text-gray-600 hover:text-gray-900 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -972,7 +972,7 @@ export default function AddProductPage() {
         {/* Form Actions */}
         <div className="border-t pt-6 flex justify-end space-x-3">
           <Link
-            href="/admin/products"
+            href="/admin/product"
             className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             Cancel
