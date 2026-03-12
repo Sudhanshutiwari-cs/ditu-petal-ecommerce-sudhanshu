@@ -521,9 +521,9 @@ function AboutSection() {
   return (
     <section className="min-h-screen bg-[#faf8f6] py-12 px-4 lg:py-16 lg:px-16">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-        {/* Left Content */}
+        {/* Left Content - same as before */}
         <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
-          {/* About Us Label */}
+          {/* ... keep all the left content exactly the same ... */}
           <div className="flex items-center gap-2 text-[#9b8579]">
             <svg
               width="16"
@@ -541,12 +541,10 @@ function AboutSection() {
             <span className="text-xs lg:text-sm font-medium tracking-wider uppercase">About Us</span>
           </div>
 
-          {/* Heading */}
           <h1 className="text-3xl lg:text-4xl xl:text-5xl font-serif text-[#3d3d3d]">
             Where Poetry Meets <span className="text-[#c4a07a] italic">Petals</span>
           </h1>
 
-          {/* Description */}
           <div className="space-y-4 text-[#5a5a5a] leading-relaxed text-sm lg:text-base">
             <p>
               At DituPetal, we believe flowers are more than just botanical beauty—
@@ -561,9 +559,7 @@ function AboutSection() {
             </p>
           </div>
 
-          {/* Feature Cards - Responsive grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-            {/* Crafted with Love */}
             <div className="bg-[#fdf5f3] rounded-xl p-4 lg:p-6 text-center">
               <div className="flex justify-center mb-3 lg:mb-4">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
@@ -588,7 +584,6 @@ function AboutSection() {
               </p>
             </div>
 
-            {/* Sustainably Sourced */}
             <div className="bg-[#f5f9f7] rounded-xl p-4 lg:p-6 text-center">
               <div className="flex justify-center mb-3 lg:mb-4">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
@@ -614,7 +609,6 @@ function AboutSection() {
               </p>
             </div>
 
-            {/* Artisan Quality */}
             <div className="bg-[#fdf8f3] rounded-xl p-4 lg:p-6 text-center">
               <div className="flex justify-center mb-3 lg:mb-4">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white flex items-center justify-center">
@@ -640,13 +634,12 @@ function AboutSection() {
             </div>
           </div>
 
-          {/* CTA Button */}
           <button className="mt-4 lg:mt-6 px-6 lg:px-8 py-2.5 lg:py-3 bg-[#fdf5f3] text-[#c4a07a] rounded-full font-medium hover:bg-[#fbeee9] transition-colors text-sm lg:text-base">
             Discover Our Story
           </button>
         </div>
 
-        {/* Right Content - Image Grid */}
+        {/* Right Content - Image Grid - FIXED */}
         <div className="relative order-1 lg:order-2 mb-8 lg:mb-0">
           <div className="grid grid-cols-2 gap-2 lg:gap-4">
             {/* Top Left - Large Image */}
@@ -668,7 +661,7 @@ function AboutSection() {
             </div>
 
             {/* Bottom Right Image */}
-            <div className="relative">
+            <div>
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG_53431.webp"
                 alt="Red roses bouquet"
@@ -676,8 +669,8 @@ function AboutSection() {
               />
             </div>
 
-            {/* Bottom Left Image */}
-            <div className="col-span-1 -mt-10 lg:-mt-20">
+            {/* Bottom Left Image - FIXED: Removed negative margin that was causing overlap */}
+            <div className="col-span-1">
               <img
                 src="https://wuwjfagcfhowbwqwujka.supabase.co/storage/v1/object/public/website-assets/website-images/IMG_52101.webp"
                 alt="White roses bouquet"
@@ -686,8 +679,8 @@ function AboutSection() {
             </div>
           </div>
 
-          {/* Stats Bar - Responsive positioning */}
-          <div className="absolute -bottom-6 lg:bottom-8 right-0 left-0 lg:left-auto bg-[#4a3f3a] rounded-xl px-4 lg:px-8 py-3 lg:py-4 flex items-center justify-around lg:justify-start gap-3 lg:gap-6 mx-4 lg:mx-0">
+          {/* Stats Bar - FIXED: Adjusted positioning */}
+          <div className="absolute -bottom-6 lg:bottom-8 left-0 right-0 lg:left-auto lg:right-0 bg-[#4a3f3a] rounded-xl px-4 lg:px-8 py-3 lg:py-4 flex items-center justify-around lg:justify-start gap-3 lg:gap-6 mx-4 lg:mx-0 lg:w-auto">
             <div className="text-center pr-3 lg:pr-6 border-r border-[#6a5f5a]">
               <div className="text-[#c9a86c] text-base lg:text-xl font-semibold">
                 5<sup className="text-[10px] lg:text-xs">+</sup>
