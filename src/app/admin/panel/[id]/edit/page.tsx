@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 
-interface Website {
+interface Banner {
   id: string
   name: string
   background_color: string | null
@@ -19,7 +19,7 @@ interface Website {
   updated_at: string | null
 }
 
-interface WebsiteFormData {
+interface BannerFormData {
   name: string
   background_color: string
   image: File | string | null
@@ -105,21 +105,21 @@ function ImageUpload({ currentImage, onImageChange, label }: ImageUploadProps) {
   )
 }
 
-const mapWebsiteToFormData = (website: Website): WebsiteFormData => ({
-  name: website.name,
-  background_color: website.background_color || '#ffffff',
-  image: website.image,
-  description: website.description || '',
-  heading: website.heading || ['', '', ''],
-  side_text: website.side_text || '',
-  vertical_text: website.vertical_text || '',
+const mapBannerToFormData = (banner: Banner): BannerFormData => ({
+  name: banner.name,
+  background_color: banner.background_color || '#ffffff',
+  image: banner.image,
+  description: banner.description || '',
+  heading: banner.heading || ['', '', ''],
+  side_text: banner.side_text || '',
+  vertical_text: banner.vertical_text || '',
 })
 
-export default function EditWebsitePage() {
-  const [website, setWebsite] = useState<Website | null>(null)
+export default function EditBannerPage() {
+  const [banner, setBanner] = useState<Banner | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [formData, setFormData] = useState<WebsiteFormData | null>(null)
+  const [formData, setFormData] = useState<BannerFormData | null>(null)
   
   const params = useParams()
   const router = useRouter()
@@ -131,10 +131,10 @@ export default function EditWebsitePage() {
   )
 
   useEffect(() => {
-    fetchWebsite()
+    fetchBanner()
   }, [id])
 
-  const fetchWebsite = async () => {
+  const fetchBanner = async () => {
     try {
       const { data, error } = await supabase
         .from('websites')
@@ -144,12 +144,12 @@ export default function EditWebsitePage() {
 
       if (error) throw error
       
-      setWebsite(data)
-      setFormData(mapWebsiteToFormData(data))
+      setBanner(data)
+      setFormData(mapBannerToFormData(data))
     } catch (error) {
-      console.error('Error fetching website:', error)
-      alert('Error fetching website')
-      router.push('/admin/websites')
+      console.error('Error fetching banner:', error)
+      alert('Error fetching banner')
+      router.push('/admin/banners')
     } finally {
       setLoading(false)
     }
@@ -207,12 +207,12 @@ export default function EditWebsitePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!website || !formData) return
+    if (!banner || !formData) return
 
     setSaving(true)
 
     try {
-      const updates: Partial<Website> = {
+      const updates: Partial<Banner> = {
         name: formData.name,
         background_color: formData.background_color,
         description: formData.description,
@@ -224,7 +224,7 @@ export default function EditWebsitePage() {
 
       // Handle image upload
       if (formData.image instanceof File) {
-        const url = await uploadImage(formData.image, 'website-images')
+        const url = await uploadImage(formData.image, 'banner-images')
         if (url) updates.image = url
       } else if (typeof formData.image === 'string') {
         updates.image = formData.image
@@ -235,24 +235,24 @@ export default function EditWebsitePage() {
       const { error } = await supabase
         .from('websites')
         .update(updates)
-        .eq('id', website.id)
+        .eq('id', banner.id)
 
       if (error) throw error
 
-      alert('Website updated successfully!')
-      router.push(`/admin/websites/${id}`)
+      alert('Banner updated successfully!')
+      router.push(`/admin/banners/${id}`)
       router.refresh()
     } catch (error) {
-      console.error('Error updating website:', error)
-      alert('Error updating website')
+      console.error('Error updating banner:', error)
+      alert('Error updating banner')
     } finally {
       setSaving(false)
     }
   }
 
   const handleReset = () => {
-    if (website) {
-      setFormData(mapWebsiteToFormData(website))
+    if (banner) {
+      setFormData(mapBannerToFormData(banner))
     }
   }
 
@@ -261,7 +261,7 @@ export default function EditWebsitePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading website...</p>
+          <p className="mt-4 text-gray-600">Loading banner...</p>
         </div>
       </div>
     )
@@ -274,7 +274,7 @@ export default function EditWebsitePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link
-                href={`/admin/websites/${id}`}
+                href={`/admin/banners/${id}`}
                 className="text-gray-600 hover:text-gray-900"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,8 +282,8 @@ export default function EditWebsitePage() {
                 </svg>
               </Link>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Edit Website</h1>
-                <p className="text-sm text-gray-600 mt-1">{website?.name}</p>
+                <h1 className="text-3xl font-bold text-gray-900">Edit Banner</h1>
+                <p className="text-sm text-gray-600 mt-1">{banner?.name}</p>
               </div>
             </div>
           </div>
@@ -299,7 +299,7 @@ export default function EditWebsitePage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Website Name <span className="text-red-500">*</span>
+                  Banner Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -307,7 +307,7 @@ export default function EditWebsitePage() {
                   value={formData.name}
                   onChange={handleInputChange}
                   className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter website name"
+                  placeholder="Enter banner name"
                   required
                 />
               </div>
@@ -344,7 +344,7 @@ export default function EditWebsitePage() {
             <ImageUpload
               currentImage={typeof formData.image === 'string' ? formData.image : null}
               onImageChange={handleImageChange}
-              label="Website Main Image"
+              label="Banner Main Image"
             />
             <p className="text-xs text-gray-500 mt-2">
               Recommended size: 1920x1080px. Max size: 5MB
@@ -361,7 +361,7 @@ export default function EditWebsitePage() {
               onChange={handleInputChange}
               rows={4}
               className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter website description..."
+              placeholder="Enter banner description..."
             />
           </div>
 
@@ -432,7 +432,7 @@ export default function EditWebsitePage() {
               Reset Changes
             </button>
             <Link
-              href={`/admin/websites/${id}`}
+              href={`/admin/banners/${id}`}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel

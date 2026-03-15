@@ -5,7 +5,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 
-interface Website {
+interface Banner {
   id: string
   name: string
   background_color: string | null
@@ -18,8 +18,8 @@ interface Website {
   updated_at: string | null
 }
 
-export default function ViewWebsitePage() {
-  const [website, setWebsite] = useState<Website | null>(null)
+export default function ViewBannerPage() {
+  const [banner, setBanner] = useState<Banner | null>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const router = useRouter()
@@ -31,10 +31,10 @@ export default function ViewWebsitePage() {
   )
 
   useEffect(() => {
-    fetchWebsite()
+    fetchBanner()
   }, [id])
 
-  const fetchWebsite = async () => {
+  const fetchBanner = async () => {
     try {
       const { data, error } = await supabase
         .from('websites')
@@ -43,11 +43,11 @@ export default function ViewWebsitePage() {
         .single()
 
       if (error) throw error
-      setWebsite(data)
+      setBanner(data)
     } catch (error) {
-      console.error('Error fetching website:', error)
-      alert('Error fetching website')
-      router.push('/admin/websites')
+      console.error('Error fetching banner:', error)
+      alert('Error fetching banner')
+      router.push('/admin/banners')
     } finally {
       setLoading(false)
     }
@@ -58,19 +58,19 @@ export default function ViewWebsitePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading website...</p>
+          <p className="mt-4 text-gray-600">Loading banner...</p>
         </div>
       </div>
     )
   }
 
-  if (!website) {
+  if (!banner) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Website not found</p>
-          <Link href="/admin/websites" className="text-blue-600 hover:text-blue-800 mt-4 inline-block">
-            Back to Websites
+          <p className="text-gray-600">Banner not found</p>
+          <Link href="/admin/banners" className="text-blue-600 hover:text-blue-800 mt-4 inline-block">
+            Back to Banners
           </Link>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function ViewWebsitePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link
-                href="/admin/websites"
+                href="/admin/banners"
                 className="text-gray-600 hover:text-gray-900"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,16 +92,16 @@ export default function ViewWebsitePage() {
                 </svg>
               </Link>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{website.name}</h1>
-                <p className="text-sm text-gray-600 mt-1">View website configuration</p>
+                <h1 className="text-3xl font-bold text-gray-900">{banner.name}</h1>
+                <p className="text-sm text-gray-600 mt-1">View banner configuration</p>
               </div>
             </div>
             <div className="flex space-x-3">
               <Link
-                href={`/admin/websites/${id}/edit`}
+                href={`/admin/banners/${id}/edit`}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Edit Website
+                Edit Banner
               </Link>
             </div>
           </div>
@@ -114,12 +114,12 @@ export default function ViewWebsitePage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div 
               className="h-64 relative"
-              style={{ backgroundColor: website.background_color || '#f3f4f6' }}
+              style={{ backgroundColor: banner.background_color || '#f3f4f6' }}
             >
-              {website.image ? (
+              {banner.image ? (
                 <img
-                  src={website.image}
-                  alt={website.name}
+                  src={banner.image}
+                  alt={banner.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -143,8 +143,8 @@ export default function ViewWebsitePage() {
               
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm text-gray-500">Website Name</label>
-                  <p className="font-medium">{website.name}</p>
+                  <label className="text-sm text-gray-500">Banner Name</label>
+                  <p className="font-medium">{banner.name}</p>
                 </div>
                 
                 <div>
@@ -152,15 +152,15 @@ export default function ViewWebsitePage() {
                   <div className="flex items-center space-x-2">
                     <div 
                       className="w-6 h-6 rounded border"
-                      style={{ backgroundColor: website.background_color || '#ffffff' }}
+                      style={{ backgroundColor: banner.background_color || '#ffffff' }}
                     />
-                    <p className="font-medium">{website.background_color || '#ffffff'}</p>
+                    <p className="font-medium">{banner.background_color || '#ffffff'}</p>
                   </div>
                 </div>
 
                 <div>
                   <label className="text-sm text-gray-500">Description</label>
-                  <p className="font-medium whitespace-pre-wrap">{website.description || 'No description provided'}</p>
+                  <p className="font-medium whitespace-pre-wrap">{banner.description || 'No description provided'}</p>
                 </div>
               </div>
             </div>
@@ -175,8 +175,8 @@ export default function ViewWebsitePage() {
               </h2>
               
               <div className="space-y-4">
-                {website.heading && website.heading.length > 0 ? (
-                  website.heading.map((heading, index) => (
+                {banner.heading && banner.heading.length > 0 ? (
+                  banner.heading.map((heading, index) => (
                     <div key={index}>
                       <label className="text-sm text-gray-500">Heading {index + 1}</label>
                       <p className="font-medium">{heading || '(empty)'}</p>
@@ -200,12 +200,12 @@ export default function ViewWebsitePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm text-gray-500">Side Text</label>
-                  <p className="font-medium whitespace-pre-wrap">{website.side_text || 'No side text provided'}</p>
+                  <p className="font-medium whitespace-pre-wrap">{banner.side_text || 'No side text provided'}</p>
                 </div>
                 
                 <div>
                   <label className="text-sm text-gray-500">Vertical Text</label>
-                  <p className="font-medium whitespace-pre-wrap">{website.vertical_text || 'No vertical text provided'}</p>
+                  <p className="font-medium whitespace-pre-wrap">{banner.vertical_text || 'No vertical text provided'}</p>
                 </div>
               </div>
             </div>
@@ -223,20 +223,20 @@ export default function ViewWebsitePage() {
                 <div>
                   <label className="text-sm text-gray-500">Created At</label>
                   <p className="font-medium">
-                    {website.created_at ? new Date(website.created_at).toLocaleString() : 'N/A'}
+                    {banner.created_at ? new Date(banner.created_at).toLocaleString() : 'N/A'}
                   </p>
                 </div>
                 
                 <div>
                   <label className="text-sm text-gray-500">Last Updated</label>
                   <p className="font-medium">
-                    {website.updated_at ? new Date(website.updated_at).toLocaleString() : 'N/A'}
+                    {banner.updated_at ? new Date(banner.updated_at).toLocaleString() : 'N/A'}
                   </p>
                 </div>
 
                 <div>
-                  <label className="text-sm text-gray-500">Website ID</label>
-                  <p className="font-medium text-sm text-gray-600">{website.id}</p>
+                  <label className="text-sm text-gray-500">Banner ID</label>
+                  <p className="font-medium text-sm text-gray-600">{banner.id}</p>
                 </div>
               </div>
             </div>

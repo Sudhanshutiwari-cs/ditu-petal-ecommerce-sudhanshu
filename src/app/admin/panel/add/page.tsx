@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-interface WebsiteFormData {
+interface BannerFormData {
   name: string
   background_color: string
   image: File | string | null
@@ -88,11 +88,11 @@ function ImageUpload({ currentImage, onImageChange, label }: ImageUploadProps) {
   )
 }
 
-export default function AddWebsitePage() {
+export default function AddBannerPage() {
   const [saving, setSaving] = useState(false)
   const router = useRouter()
 
-  const [formData, setFormData] = useState<WebsiteFormData>({
+  const [formData, setFormData] = useState<BannerFormData>({
     name: '',
     background_color: '#ffffff',
     image: null,
@@ -130,36 +130,36 @@ export default function AddWebsitePage() {
       image: file
     }))
   }
-
+      
   const uploadImage = async (file: File, path: string): Promise<string | null> => {
     try {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
       const filePath = `${path}/${fileName}`
-
+      
       const { error: uploadError } = await supabase.storage
         .from('website-assets')
         .upload(filePath, file)
-
+      
       if (uploadError) throw uploadError
 
       const { data: { publicUrl } } = supabase.storage
         .from('website-assets')
         .getPublicUrl(filePath)
-
+      
       return publicUrl
     } catch (error) {
       console.error('Error uploading image:', error)
       return null
     }
   }
-
+       
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-
+                                                                                                   
     try {
-      const newWebsite: Partial<WebsiteFormData & { created_at: string; updated_at: string }> = {
+      const newBanner: Partial<BannerFormData & { created_at: string; updated_at: string }> = {
         name: formData.name,
         background_color: formData.background_color,
         description: formData.description,
@@ -169,25 +169,25 @@ export default function AddWebsitePage() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
-
+      
       // Handle image upload
       if (formData.image instanceof File) {
-        const url = await uploadImage(formData.image, 'website-images')
-        if (url) newWebsite.image = url
+        const url = await uploadImage(formData.image, 'banner-images')
+        if (url) newBanner.image = url
       }
-
+      
       const { error } = await supabase
         .from('websites')
-        .insert([newWebsite])
-
+        .insert([newBanner])
+      
       if (error) throw error
 
-      alert('Website created successfully!')
-      router.push('/admin/websites')
+      alert('Banner created successfully!')
+      router.push('/admin/panel')
       router.refresh()
     } catch (error) {
-      console.error('Error creating website:', error)
-      alert('Error creating website')
+      console.error('Error creating banner:', error)
+      alert('Error creating banner')
     } finally {
       setSaving(false)
     }
@@ -199,7 +199,7 @@ export default function AddWebsitePage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center space-x-4">
             <Link
-              href="/admin/websites"
+              href="/admin/panel"
               className="text-gray-600 hover:text-gray-900"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,23 +207,23 @@ export default function AddWebsitePage() {
               </svg>
             </Link>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Add New Website</h1>
-              <p className="text-sm text-gray-600 mt-1">Create a new website configuration</p>
+              <h1 className="text-3xl font-bold text-gray-900">Add New Banner</h1>
+              <p className="text-sm text-gray-600 mt-1">Create a new banner configuration</p>
             </div>
           </div>
         </div>
       </div>
-
+      
       <div className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto">
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-            
+             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Website Name <span className="text-red-500">*</span>
+                  Banner Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -231,11 +231,11 @@ export default function AddWebsitePage() {
                   value={formData.name}
                   onChange={handleInputChange}
                   className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter website name"
+                  placeholder="Enter banner name"
                   required
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Background Color
@@ -260,7 +260,7 @@ export default function AddWebsitePage() {
               </div>
             </div>
           </div>
-
+          
           {/* Main Image */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">Main Image</h2>
@@ -268,7 +268,7 @@ export default function AddWebsitePage() {
             <ImageUpload
               currentImage={null}
               onImageChange={handleImageChange}
-              label="Website Main Image"
+              label="Banner Main Image"
             />
             <p className="text-xs text-gray-500 mt-2">
               Recommended size: 1920x1080px. Max size: 5MB
@@ -285,10 +285,10 @@ export default function AddWebsitePage() {
               onChange={handleInputChange}
               rows={4}
               className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter website description..."
+              placeholder="Enter banner description..."
             />
           </div>
-
+            
           {/* Headings */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">Headings</h2>
@@ -310,7 +310,7 @@ export default function AddWebsitePage() {
               ))}
             </div>
           </div>
-
+          
           {/* Side Text and Vertical Text */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">Additional Text</h2>
@@ -329,7 +329,7 @@ export default function AddWebsitePage() {
                   placeholder="Enter side text..."
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Vertical Text
@@ -345,11 +345,11 @@ export default function AddWebsitePage() {
               </div>
             </div>
           </div>
-
+          
           {/* Form Actions */}
           <div className="flex justify-end space-x-4 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <Link
-              href="/admin/websites"
+              href="/admin/banners"
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel
@@ -368,7 +368,7 @@ export default function AddWebsitePage() {
                   Creating...
                 </span>
               ) : (
-                'Create Website'
+                'Create Banner'
               )}
             </button>
           </div>
