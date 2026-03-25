@@ -285,7 +285,7 @@ export default function EditBannerPage() {
     }
   }
 
-  // CKEditor configuration with all features
+  // CKEditor configuration with all features - FIXED VERSION
   const editorConfig = {
     toolbar: {
       items: [
@@ -319,19 +319,23 @@ export default function EditBannerPage() {
       ],
       shouldNotGroupWhenFull: false
     },
+    // Simplified heading configuration to avoid type issues
     heading: {
       options: [
         { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
         { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
         { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
       ]
     },
     fontSize: {
-      options: ['tiny', 'small', 'default', 'big', 'huge']
+      options: [
+        'tiny',
+        'small',
+        'default',
+        'big',
+        'huge'
+      ]
     },
     fontFamily: {
       options: [
@@ -344,34 +348,34 @@ export default function EditBannerPage() {
     },
     fontColor: {
       colors: [
-        { color: '#000000', label: 'Black' },
-        { color: '#4d4d4d', label: 'Dim grey' },
-        { color: '#999999', label: 'Grey' },
-        { color: '#e6e6e6', label: 'Light grey' },
-        { color: '#ffffff', label: 'White', hasBorder: true },
-        { color: '#ff0000', label: 'Red' },
-        { color: '#ff6600', label: 'Orange' },
-        { color: '#ffff00', label: 'Yellow' },
-        { color: '#00ff00', label: 'Green' },
-        { color: '#00ffff', label: 'Cyan' },
-        { color: '#0000ff', label: 'Blue' },
-        { color: '#ff00ff', label: 'Magenta' }
+        { color: 'hsl(0, 0%, 0%)', label: 'Black' },
+        { color: 'hsl(0, 0%, 30%)', label: 'Dim grey' },
+        { color: 'hsl(0, 0%, 60%)', label: 'Grey' },
+        { color: 'hsl(0, 0%, 90%)', label: 'Light grey' },
+        { color: 'hsl(0, 0%, 100%)', label: 'White' },
+        { color: 'hsl(0, 100%, 50%)', label: 'Red' },
+        { color: 'hsl(30, 100%, 50%)', label: 'Orange' },
+        { color: 'hsl(60, 100%, 50%)', label: 'Yellow' },
+        { color: 'hsl(120, 100%, 50%)', label: 'Green' },
+        { color: 'hsl(180, 100%, 50%)', label: 'Cyan' },
+        { color: 'hsl(240, 100%, 50%)', label: 'Blue' },
+        { color: 'hsl(300, 100%, 50%)', label: 'Magenta' }
       ]
     },
     fontBackgroundColor: {
       colors: [
-        { color: '#000000', label: 'Black' },
-        { color: '#4d4d4d', label: 'Dim grey' },
-        { color: '#999999', label: 'Grey' },
-        { color: '#e6e6e6', label: 'Light grey' },
-        { color: '#ffffff', label: 'White', hasBorder: true },
-        { color: '#ff0000', label: 'Red' },
-        { color: '#ff6600', label: 'Orange' },
-        { color: '#ffff00', label: 'Yellow' },
-        { color: '#00ff00', label: 'Green' },
-        { color: '#00ffff', label: 'Cyan' },
-        { color: '#0000ff', label: 'Blue' },
-        { color: '#ff00ff', label: 'Magenta' }
+        { color: 'hsl(0, 0%, 0%)', label: 'Black' },
+        { color: 'hsl(0, 0%, 30%)', label: 'Dim grey' },
+        { color: 'hsl(0, 0%, 60%)', label: 'Grey' },
+        { color: 'hsl(0, 0%, 90%)', label: 'Light grey' },
+        { color: 'hsl(0, 0%, 100%)', label: 'White' },
+        { color: 'hsl(0, 100%, 50%)', label: 'Red' },
+        { color: 'hsl(30, 100%, 50%)', label: 'Orange' },
+        { color: 'hsl(60, 100%, 50%)', label: 'Yellow' },
+        { color: 'hsl(120, 100%, 50%)', label: 'Green' },
+        { color: 'hsl(180, 100%, 50%)', label: 'Cyan' },
+        { color: 'hsl(240, 100%, 50%)', label: 'Blue' },
+        { color: 'hsl(300, 100%, 50%)', label: 'Magenta' }
       ]
     },
     alignment: {
