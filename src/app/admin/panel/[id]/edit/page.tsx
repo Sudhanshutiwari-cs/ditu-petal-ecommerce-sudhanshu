@@ -22,7 +22,8 @@ const CKEditor = dynamic(
   }
 )
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+// Import ClassicEditor as a dynamic import to avoid type issues
+import type ClassicEditorType from '@ckeditor/ckeditor5-build-classic'
 
 interface Banner {
   id: string
@@ -30,7 +31,7 @@ interface Banner {
   background_color: string | null
   image: string | null
   description: string | null
-  heading: string | null  // Changed from array to single string
+  heading: string | null
   side_text: string | null
   vertical_text: string | null
   created_at: string | null
@@ -42,7 +43,7 @@ interface BannerFormData {
   background_color: string
   image: File | string | null
   description: string
-  heading: string  // Changed from array to single string
+  heading: string
   side_text: string
   vertical_text: string
 }
@@ -128,7 +129,7 @@ const mapBannerToFormData = (banner: Banner): BannerFormData => ({
   background_color: banner.background_color || '#ffffff',
   image: banner.image,
   description: banner.description || '',
-  heading: banner.heading || '',  // Changed from array to single string
+  heading: banner.heading || '',
   side_text: banner.side_text || '',
   vertical_text: banner.vertical_text || '',
 })
@@ -139,6 +140,7 @@ export default function EditBannerPage() {
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState<BannerFormData | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [editor, setEditor] = useState<any>(null)
   
   const params = useParams()
   const router = useRouter()
@@ -153,6 +155,15 @@ export default function EditBannerPage() {
     setMounted(true)
     fetchBanner()
   }, [id])
+
+  // Dynamically import ClassicEditor only on client side
+  useEffect(() => {
+    if (mounted) {
+      import('@ckeditor/ckeditor5-build-classic').then((module) => {
+        setEditor(() => module.default)
+      })
+    }
+  }, [mounted])
 
   const fetchBanner = async () => {
     try {
@@ -234,7 +245,7 @@ export default function EditBannerPage() {
         name: formData.name,
         background_color: formData.background_color,
         description: formData.description,
-        heading: formData.heading,  // Now a single string
+        heading: formData.heading,
         side_text: formData.side_text,
         vertical_text: formData.vertical_text,
         updated_at: new Date().toISOString()
@@ -496,18 +507,25 @@ export default function EditBannerPage() {
               </label>
               
               <div className="ckeditor-container">
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={formData.heading}
-                  config={editorConfig}
-                  onChange={(event: any, editor: any) => {
-                    const data = editor.getData()
-                    handleHeadingChange(data)
-                  }}
-                  onReady={(editor: any) => {
-                    console.log('Editor is ready to use!', editor)
-                  }}
-                />
+                {editor && mounted && (
+                  <CKEditor
+                    editor={editor}
+                    data={formData.heading}
+                    config={editorConfig}
+                    onChange={(event: any, editor: any) => {
+                      const data = editor.getData()
+                      handleHeadingChange(data)
+                    }}
+                    onReady={(editor: any) => {
+                      console.log('Editor is ready to use!', editor)
+                    }}
+                  />
+                )}
+                {(!editor || !mounted) && (
+                  <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 h-64 flex items-center justify-center">
+                    <div className="animate-pulse text-gray-400">Loading editor...</div>
+                  </div>
+                )}
               </div>
               
               <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
