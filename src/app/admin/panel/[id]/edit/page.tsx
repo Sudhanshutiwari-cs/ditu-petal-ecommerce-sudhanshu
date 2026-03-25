@@ -5,6 +5,24 @@ import { createBrowserClient } from '@supabase/ssr'
 import { useDropzone } from 'react-dropzone'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+// Dynamically import CKEditor with no SSR
+const CKEditor = dynamic(
+  () => import('@ckeditor/ckeditor5-react').then(mod => mod.CKEditor),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div className="h-64 flex items-center justify-center">
+          <div className="animate-pulse text-gray-400">Loading editor...</div>
+        </div>
+      </div>
+    )
+  }
+)
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 interface Banner {
   id: string
@@ -12,7 +30,7 @@ interface Banner {
   background_color: string | null
   image: string | null
   description: string | null
-  heading: string[] | null
+  heading: string | null  // Changed from array to single string
   side_text: string | null
   vertical_text: string | null
   created_at: string | null
@@ -24,7 +42,7 @@ interface BannerFormData {
   background_color: string
   image: File | string | null
   description: string
-  heading: string[]
+  heading: string  // Changed from array to single string
   side_text: string
   vertical_text: string
 }
@@ -110,7 +128,7 @@ const mapBannerToFormData = (banner: Banner): BannerFormData => ({
   background_color: banner.background_color || '#ffffff',
   image: banner.image,
   description: banner.description || '',
-  heading: banner.heading || ['', '', ''],
+  heading: banner.heading || '',  // Changed from array to single string
   side_text: banner.side_text || '',
   vertical_text: banner.vertical_text || '',
 })
@@ -120,6 +138,7 @@ export default function EditBannerPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState<BannerFormData | null>(null)
+  const [mounted, setMounted] = useState(false)
   
   const params = useParams()
   const router = useRouter()
@@ -131,6 +150,7 @@ export default function EditBannerPage() {
   )
 
   useEffect(() => {
+    setMounted(true)
     fetchBanner()
   }, [id])
 
@@ -164,13 +184,11 @@ export default function EditBannerPage() {
     }))
   }
 
-  const handleHeadingChange = (index: number, value: string) => {
+  const handleHeadingChange = (value: string) => {
     if (!formData) return
-    const newHeadings = [...formData.heading]
-    newHeadings[index] = value
     setFormData(prev => ({
       ...prev!,
-      heading: newHeadings
+      heading: value
     }))
   }
 
@@ -216,7 +234,7 @@ export default function EditBannerPage() {
         name: formData.name,
         background_color: formData.background_color,
         description: formData.description,
-        heading: formData.heading,
+        heading: formData.heading,  // Now a single string
         side_text: formData.side_text,
         vertical_text: formData.vertical_text,
         updated_at: new Date().toISOString()
@@ -254,6 +272,109 @@ export default function EditBannerPage() {
     if (banner) {
       setFormData(mapBannerToFormData(banner))
     }
+  }
+
+  // CKEditor configuration with all features
+  const editorConfig = {
+    toolbar: {
+      items: [
+        'heading',
+        '|',
+        'bold',
+        'italic',
+        'underline',
+        'strikethrough',
+        '|',
+        'fontSize',
+        'fontFamily',
+        'fontColor',
+        'fontBackgroundColor',
+        '|',
+        'alignment',
+        '|',
+        'bulletedList',
+        'numberedList',
+        'outdent',
+        'indent',
+        '|',
+        'link',
+        'blockQuote',
+        'insertTable',
+        '|',
+        'undo',
+        'redo',
+        '|',
+        'removeFormat'
+      ],
+      shouldNotGroupWhenFull: false
+    },
+    heading: {
+      options: [
+        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+      ]
+    },
+    fontSize: {
+      options: ['tiny', 'small', 'default', 'big', 'huge']
+    },
+    fontFamily: {
+      options: [
+        'default',
+        'Arial, Helvetica, sans-serif',
+        'Courier New, Courier, monospace',
+        'Georgia, serif',
+        'Times New Roman, Times, serif'
+      ]
+    },
+    fontColor: {
+      colors: [
+        { color: '#000000', label: 'Black' },
+        { color: '#4d4d4d', label: 'Dim grey' },
+        { color: '#999999', label: 'Grey' },
+        { color: '#e6e6e6', label: 'Light grey' },
+        { color: '#ffffff', label: 'White', hasBorder: true },
+        { color: '#ff0000', label: 'Red' },
+        { color: '#ff6600', label: 'Orange' },
+        { color: '#ffff00', label: 'Yellow' },
+        { color: '#00ff00', label: 'Green' },
+        { color: '#00ffff', label: 'Cyan' },
+        { color: '#0000ff', label: 'Blue' },
+        { color: '#ff00ff', label: 'Magenta' }
+      ]
+    },
+    fontBackgroundColor: {
+      colors: [
+        { color: '#000000', label: 'Black' },
+        { color: '#4d4d4d', label: 'Dim grey' },
+        { color: '#999999', label: 'Grey' },
+        { color: '#e6e6e6', label: 'Light grey' },
+        { color: '#ffffff', label: 'White', hasBorder: true },
+        { color: '#ff0000', label: 'Red' },
+        { color: '#ff6600', label: 'Orange' },
+        { color: '#ffff00', label: 'Yellow' },
+        { color: '#00ff00', label: 'Green' },
+        { color: '#00ffff', label: 'Cyan' },
+        { color: '#0000ff', label: 'Blue' },
+        { color: '#ff00ff', label: 'Magenta' }
+      ]
+    },
+    alignment: {
+      options: ['left', 'center', 'right', 'justify']
+    },
+    table: {
+      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+    },
+    link: {
+      addTargetToExternalLinks: true,
+      defaultProtocol: 'https://',
+    },
+    placeholder: 'Enter heading text with full rich text formatting...',
+    language: 'en',
   }
 
   if (loading || !formData) {
@@ -353,7 +474,7 @@ export default function EditBannerPage() {
 
           {/* Description */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">Description</h2>
+            <h2 className="text-xl font-semibold mb-4">Banner Eyebrow</h2>
             
             <textarea
               name="description"
@@ -361,35 +482,51 @@ export default function EditBannerPage() {
               onChange={handleInputChange}
               rows={4}
               className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter banner description..."
+              placeholder="Enter banner eyebrow..."
             />
           </div>
 
-          {/* Headings */}
+          {/* Main Heading with CKEditor */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">Headings</h2>
+            <h2 className="text-xl font-semibold mb-4">Main Heading (Rich Text Editor)</h2>
             
-            <div className="space-y-4">
-              {[0, 1, 2].map((index) => (
-                <div key={index}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Heading {index + 1}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.heading[index] || ''}
-                    onChange={(e) => handleHeadingChange(index, e.target.value)}
-                    className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={`Enter heading ${index + 1}`}
-                  />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Heading Content
+              </label>
+              
+              <div className="ckeditor-container">
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={formData.heading}
+                  config={editorConfig}
+                  onChange={(event: any, editor: any) => {
+                    const data = editor.getData()
+                    handleHeadingChange(data)
+                  }}
+                  onReady={(editor: any) => {
+                    console.log('Editor is ready to use!', editor)
+                  }}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                <span>💡 Features: Text formatting, colors, lists, tables, links, and more!</span>
+                <span className="font-mono">HTML formatting preserved</span>
+              </div>
+              
+              {/* Character Count (without HTML tags) */}
+              {formData.heading && (
+                <div className="text-right text-xs text-gray-400 mt-2">
+                  Character count: {formData.heading.replace(/<[^>]*>/g, '').length}
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
           {/* Side Text and Vertical Text */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">Additional Text</h2>
+            <h2 className="text-xl font-semibold mb-4">Additional Background Overlay Text</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -457,6 +594,36 @@ export default function EditBannerPage() {
           </div>
         </form>
       </div>
+
+      {/* Add custom styles for CKEditor */}
+      <style jsx global>{`
+        .ckeditor-container {
+          width: 100%;
+        }
+        .ckeditor-container .ck-editor__editable {
+          min-height: 300px;
+          max-height: 500px;
+        }
+        .ckeditor-container .ck-content {
+          font-size: 14px;
+          line-height: 1.6;
+        }
+        .ckeditor-container .ck-content h1 {
+          font-size: 2em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content h2 {
+          font-size: 1.5em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content h3 {
+          font-size: 1.17em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content p {
+          margin-bottom: 1em;
+        }
+      `}</style>
     </div>
   )
 }

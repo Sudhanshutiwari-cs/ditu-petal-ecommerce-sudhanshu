@@ -11,7 +11,7 @@ interface Banner {
   background_color: string | null
   image: string | null
   description: string | null
-  heading: string[] | null
+  heading: string | null  // Changed from array to single string
   side_text: string | null
   vertical_text: string | null
   created_at: string | null
@@ -51,6 +51,14 @@ export default function ViewBannerPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Function to strip HTML tags for plain text display
+  const stripHtml = (html: string) => {
+    if (!html) return ''
+    const tmp = document.createElement('div')
+    tmp.innerHTML = html
+    return tmp.textContent || tmp.innerText || ''
   }
 
   if (loading) {
@@ -159,31 +167,42 @@ export default function ViewBannerPage() {
                 </div>
 
                 <div>
-                  <label className="text-sm text-gray-500">Description</label>
+                  <label className="text-sm text-gray-500">Banner Eyebrow</label>
                   <p className="font-medium whitespace-pre-wrap">{banner.description || 'No description provided'}</p>
                 </div>
               </div>
             </div>
 
-            {/* Headings */}
+            {/* Main Heading with Rich Text */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center">
                 <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                 </svg>
-                Headings
+                Main Heading
               </h2>
               
-              <div className="space-y-4">
-                {banner.heading && banner.heading.length > 0 ? (
-                  banner.heading.map((heading, index) => (
-                    <div key={index}>
-                      <label className="text-sm text-gray-500">Heading {index + 1}</label>
-                      <p className="font-medium">{heading || '(empty)'}</p>
+              <div>
+                {banner.heading ? (
+                  <div className="prose max-w-none">
+                    <div 
+                      dangerouslySetInnerHTML={{ __html: banner.heading }}
+                      className="rich-text-content"
+                    />
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="text-xs text-gray-400">HTML Preview</label>
+                      <details className="mt-1">
+                        <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                          Show HTML source
+                        </summary>
+                        <pre className="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">
+                          <code>{banner.heading}</code>
+                        </pre>
+                      </details>
                     </div>
-                  ))
+                  </div>
                 ) : (
-                  <p className="text-gray-500">No headings provided</p>
+                  <p className="text-gray-500">No heading provided</p>
                 )}
               </div>
             </div>
@@ -194,7 +213,7 @@ export default function ViewBannerPage() {
                 <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                 </svg>
-                Additional Text
+                Additional Background Overlay Text
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,15 +253,116 @@ export default function ViewBannerPage() {
                   </p>
                 </div>
 
-                <div>
+                <div className="md:col-span-2">
                   <label className="text-sm text-gray-500">Banner ID</label>
-                  <p className="font-medium text-sm text-gray-600">{banner.id}</p>
+                  <p className="font-medium text-sm text-gray-600 font-mono">{banner.id}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Add styles for rich text content */}
+      <style jsx global>{`
+        .rich-text-content {
+          line-height: 1.6;
+          color: #374151;
+        }
+        .rich-text-content h1 {
+          font-size: 2em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+        }
+        .rich-text-content h2 {
+          font-size: 1.5em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+        }
+        .rich-text-content h3 {
+          font-size: 1.17em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+        }
+        .rich-text-content h4 {
+          font-size: 1em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+        }
+        .rich-text-content p {
+          margin-bottom: 1em;
+        }
+        .rich-text-content strong {
+          font-weight: bold;
+        }
+        .rich-text-content em {
+          font-style: italic;
+        }
+        .rich-text-content u {
+          text-decoration: underline;
+        }
+        .rich-text-content ul, .rich-text-content ol {
+          margin-left: 1.5em;
+          margin-bottom: 1em;
+        }
+        .rich-text-content ul {
+          list-style-type: disc;
+        }
+        .rich-text-content ol {
+          list-style-type: decimal;
+        }
+        .rich-text-content li {
+          margin-bottom: 0.25em;
+        }
+        .rich-text-content a {
+          color: #3b82f6;
+          text-decoration: underline;
+        }
+        .rich-text-content a:hover {
+          color: #2563eb;
+        }
+        .rich-text-content blockquote {
+          border-left: 4px solid #e5e7eb;
+          padding-left: 1em;
+          margin: 1em 0;
+          color: #6b7280;
+        }
+        .rich-text-content table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-bottom: 1em;
+        }
+        .rich-text-content table td, .rich-text-content table th {
+          border: 1px solid #e5e7eb;
+          padding: 0.5em;
+        }
+        .rich-text-content table th {
+          background-color: #f9fafb;
+          font-weight: bold;
+        }
+        .rich-text-content code {
+          background-color: #f3f4f6;
+          padding: 0.2em 0.4em;
+          border-radius: 3px;
+          font-family: monospace;
+          font-size: 0.9em;
+        }
+        .rich-text-content pre {
+          background-color: #f3f4f6;
+          padding: 1em;
+          border-radius: 6px;
+          overflow-x: auto;
+          margin-bottom: 1em;
+        }
+        .rich-text-content pre code {
+          background-color: transparent;
+          padding: 0;
+        }
+      `}</style>
     </div>
   )
 }
