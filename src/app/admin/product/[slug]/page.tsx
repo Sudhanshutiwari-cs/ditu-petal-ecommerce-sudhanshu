@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import Head from 'next/head';
+import { supabase } from '@/lib/supabase';
 
 interface Product {
   id: string;
@@ -12,6 +12,8 @@ interface Product {
   description: string | null;
   short_description: string | null;
   category_id: string | null;
+  sub_category_id: string | null;
+  child_category_id: string | null;
   price: number;
   compare_price: number | null;
   stock: number | null;
@@ -37,7 +39,15 @@ interface Product {
   categories?: {
     name: string;
   } | null;
+  sub_categories?: {
+    name: string;
+  } | null;
+  child_categories?: {
+    name: string;
+  } | null;
   category_name?: string;
+  sub_category_name?: string;
+  child_category_name?: string;
 }
 
 export default function ViewProductPage() {
@@ -154,25 +164,35 @@ export default function ViewProductPage() {
       
       console.log('Fetching product with slug:', slug); // Debug log
       
-      const response = await fetch(`/api/products/slug/${slug}`);
-      
-      // Log the response status for debugging
-      console.log('Response status:', response.status);
-      
-      const result = await response.json();
-      console.log('Response data:', result); // Debug log
+      // Direct Supabase query with joins
+      const { data, error: supabaseError } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories:category_id(name),
+          sub_categories:sub_category_id(name),
+          child_categories:child_category_id(name)
+        `)
+        .eq('slug', slug)
+        .single();
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to fetch product');
+      if (supabaseError) {
+        throw supabaseError;
       }
 
-      // Add category name
-      const productWithCategory = {
-        ...result.data,
-        category_name: result.data.categories?.name || 'N/A'
+      if (!data) {
+        throw new Error('Product not found');
+      }
+
+      // Add category names
+      const productWithNames = {
+        ...data,
+        category_name: data.categories?.name || 'N/A',
+        sub_category_name: data.sub_categories?.name || null,
+        child_category_name: data.child_categories?.name || null
       };
       
-      setProduct(productWithCategory);
+      setProduct(productWithNames);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch product');
       console.error('Error fetching product:', err);
@@ -230,7 +250,7 @@ export default function ViewProductPage() {
           </div>
           <div className="flex space-x-3">
             <Link
-              href={`/admin/products/${product.slug}/edit`}
+              href={`/admin/product/${product.slug}/edit`}
               className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
             >
               Edit Product
@@ -282,6 +302,14 @@ export default function ViewProductPage() {
             <div>
               <p className="text-sm text-gray-500">Category</p>
               <p className="mt-1">{product.category_name}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Sub Category</p>
+              <p className="mt-1">{product.sub_category_name || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Child Category</p>
+              <p className="mt-1">{product.child_category_name || 'N/A'}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Price</p>

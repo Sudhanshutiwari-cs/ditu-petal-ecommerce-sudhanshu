@@ -12,6 +12,23 @@ interface Category {
   description: string | null;
 }
 
+interface SubCategory {
+  id: string;
+  category_id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+}
+
+interface ChildCategory {
+  id: string;
+  category_id: string;
+  sub_category_id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -19,6 +36,8 @@ interface Product {
   description: string | null;
   short_description: string | null;
   category_id: string | null;
+  sub_category_id: string | null;
+  child_category_id: string | null;
   price: number;
   compare_price: number | null;
   stock: number | null;
@@ -205,6 +224,8 @@ export default function EditProductPage() {
   const slug = params.slug as string;
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [childCategories, setChildCategories] = useState<ChildCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -217,6 +238,8 @@ export default function EditProductPage() {
     description: '',
     short_description: '',
     category_id: '',
+    sub_category_id: '',
+    child_category_id: '',
     price: '',
     compare_price: '',
     stock: '',
@@ -260,31 +283,98 @@ export default function EditProductPage() {
     }
   }, [slug]);
 
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (formData.category_id) {
+      fetchSubCategories(formData.category_id);
+      // Reset subcategory and child category when category changes
+      setFormData(prev => ({
+        ...prev,
+        sub_category_id: '',
+        child_category_id: ''
+      }));
+      setChildCategories([]);
+    } else {
+      setSubCategories([]);
+      setChildCategories([]);
+    }
+  }, [formData.category_id]);
+
+  // Fetch child categories when subcategory changes
+  useEffect(() => {
+    if (formData.sub_category_id) {
+      fetchChildCategories(formData.sub_category_id);
+      // Reset child category when subcategory changes
+      setFormData(prev => ({
+        ...prev,
+        child_category_id: ''
+      }));
+    } else {
+      setChildCategories([]);
+    }
+  }, [formData.sub_category_id]);
+
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/categories');
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories');
-      }
-      const result = await response.json();
-      setCategories(result.data);
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+      setCategories(data || []);
     } catch (err) {
       console.error('Error fetching categories:', err);
+    }
+  };
+
+  const fetchSubCategories = async (categoryId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('sub_categories')
+        .select('*')
+        .eq('category_id', categoryId)
+        .order('name');
+
+      if (error) throw error;
+      setSubCategories(data || []);
+    } catch (err) {
+      console.error('Error fetching subcategories:', err);
+      setSubCategories([]);
+    }
+  };
+
+  const fetchChildCategories = async (subCategoryId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('child_categories')
+        .select('*')
+        .eq('sub_category_id', subCategoryId)
+        .order('name');
+
+      if (error) throw error;
+      setChildCategories(data || []);
+    } catch (err) {
+      console.error('Error fetching child categories:', err);
+      setChildCategories([]);
     }
   };
 
   const fetchProduct = async () => {
     try {
       setInitialLoading(true);
-      // Use the slug-based endpoint to fetch product
-      const response = await fetch(`/api/products/slug/${slug}`);
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch product');
-      }
-      
-      const result = await response.json();
-      const product = result.data;
+      // Direct Supabase query to fetch product with relations
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error('Product not found');
+
+      const product = data;
       
       // Store the product ID for updates
       setProductId(product.id);
@@ -295,6 +385,8 @@ export default function EditProductPage() {
         description: product.description || '',
         short_description: product.short_description || '',
         category_id: product.category_id || '',
+        sub_category_id: product.sub_category_id || '',
+        child_category_id: product.child_category_id || '',
         price: product.price?.toString() || '',
         compare_price: product.compare_price?.toString() || '',
         stock: product.stock?.toString() || '',
@@ -320,6 +412,14 @@ export default function EditProductPage() {
         hero_image_2: product.hero_image_2 || null,
         hero_image_3: product.hero_image_3 || null,
       });
+
+      // Fetch subcategories and child categories based on selected category
+      if (product.category_id) {
+        await fetchSubCategories(product.category_id);
+        if (product.sub_category_id) {
+          await fetchChildCategories(product.sub_category_id);
+        }
+      }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch product');
@@ -539,6 +639,8 @@ export default function EditProductPage() {
         description: formData.description || null,
         short_description: formData.short_description || null,
         category_id: formData.category_id || null,
+        sub_category_id: formData.sub_category_id || null,
+        child_category_id: formData.child_category_id || null,
         price: parseFloat(formData.price),
         compare_price: formData.compare_price ? parseFloat(formData.compare_price) : null,
         stock: formData.stock ? parseInt(formData.stock) : null,
@@ -562,21 +664,13 @@ export default function EditProductPage() {
         seo_keywords: formData.seo_keywords || null,
       };
 
-      // Use the ID-based endpoint for updates
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData),
-      });
+      // Direct Supabase update
+      const { error: updateError } = await supabase
+        .from('products')
+        .update(productData)
+        .eq('id', productId);
 
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        const errorMessage = responseData.error || responseData.message || 'Failed to update product';
-        throw new Error(errorMessage);
-      }
+      if (updateError) throw updateError;
 
       setSuccess('Product updated successfully! Redirecting...');
       
@@ -740,6 +834,7 @@ export default function EditProductPage() {
             </p>
           </div>
 
+          {/* Hierarchical Category Selection */}
           <div>
             <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 mb-1">
               Category
@@ -757,6 +852,46 @@ export default function EditProductPage() {
               ))}
             </select>
           </div>
+
+          {formData.category_id && (
+            <div>
+              <label htmlFor="sub_category_id" className="block text-sm font-medium text-gray-700 mb-1">
+                Sub Category
+              </label>
+              <select
+                id="sub_category_id"
+                name="sub_category_id"
+                value={formData.sub_category_id}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a sub category</option>
+                {subCategories.map((sub) => (
+                  <option key={sub.id} value={sub.id}>{sub.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {formData.sub_category_id && childCategories.length > 0 && (
+            <div>
+              <label htmlFor="child_category_id" className="block text-sm font-medium text-gray-700 mb-1">
+                Child Category
+              </label>
+              <select
+                id="child_category_id"
+                name="child_category_id"
+                value={formData.child_category_id}
+                onChange={handleInputChange}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a child category</option>
+                {childCategories.map((child) => (
+                  <option key={child.id} value={child.id}>{child.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
