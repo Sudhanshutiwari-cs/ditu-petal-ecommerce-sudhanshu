@@ -1,20 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
+import { useDropzone } from 'react-dropzone'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-
-// Dynamically import CKEditor to avoid SSR issues
-const CKEditor = dynamic(
-  () => import('@ckeditor/ckeditor5-react').then(mod => mod.CKEditor),
-  { ssr: false }
-)
-
-// Import the editor and its types correctly
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-import type { Editor } from '@ckeditor/ckeditor5-core'
 
 interface Banner {
   id: string
@@ -29,105 +19,420 @@ interface Banner {
   updated_at: string | null
 }
 
-// Define editor config outside component to prevent recreation
-const editorConfig = {
-  toolbar: {
-    items: [
-      'heading',
-      '|',
-      'bold',
-      'italic',
-      'link',
-      'bulletedList',
-      'numberedList',
-      '|',
-      'outdent',
-      'indent',
-      '|',
-      'undo',
-      'redo'
-    ]
-  },
-  heading: {
-    options: [
-      { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-      { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-      { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-      { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-    ]
-  }
+interface BannerFormData {
+  name: string
+  background_color: string
+  image: File | string | null
+  description: string
+  heading: string
+  side_text: string
+  vertical_text: string
 }
 
-export default function BannersListPage() {
-  const [banners, setBanners] = useState<Banner[]>([])
-  const [loading, setLoading] = useState(true)         
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
+interface ImageUploadProps {
+  currentImage: string | null
+  onImageChange: (file: File | null) => void
+  label: string
+}
+
+function ImageUpload({ currentImage, onImageChange, label }: ImageUploadProps) {
+  const [preview, setPreview] = useState<string | null>(currentImage)
+
+  useEffect(() => {
+    setPreview(currentImage)
+  }, [currentImage])
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const selectedFile = acceptedFiles[0]
+      onImageChange(selectedFile)
+      const objectUrl = URL.createObjectURL(selectedFile)
+      setPreview(objectUrl)
+    }
+  }, [onImageChange])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+    },
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024,
+  })
+
+  const handleRemove = () => {
+    setPreview(null)
+    onImageChange(null)
+  }
+
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
+
+      {preview ? (
+        <div className="relative">
+          <div className="relative h-40 w-full rounded-lg overflow-hidden border border-gray-200">
+            <img src={preview} alt={label} className="w-full h-full object-cover"/>
+          </div>
+          <button
+            type="button"
+            onClick={handleRemove}
+            className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-lg"
+          >
+            ✕
+          </button>
+        </div>
+      ) : (
+        <div
+          {...getRootProps()}
+          className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+            isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+          }`}
+        >
+          <input {...getInputProps()} />
+          <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <p className="mt-2 text-sm text-gray-600">
+            {isDragActive ? 'Drop image here' : 'Click or drag to upload'}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            PNG, JPG, GIF up to 5MB
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Custom CKEditor wrapper that loads from CDN to avoid type issues
+function RichTextEditor({ 
+  data, 
+  onChange,
+  placeholder = 'Enter text here...'
+}: { 
+  data: string; 
+  onChange: (data: string) => void;
+  placeholder?: string;
+}) {
+  const editorRef = useRef<any>(null)
+  const [editor, setEditor] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Load CKEditor from CDN
+    const script = document.createElement('script')
+    script.src = 'https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js'
+    script.async = true
+    script.onload = () => {
+      setIsLoading(false)
+      // @ts-ignore
+      if (window.CKEditor && editorRef.current) {
+        // @ts-ignore
+        window.CKEditor.ClassicEditor
+          .create(editorRef.current, {
+            toolbar: {
+              items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                'strikethrough',
+                '|',
+                'fontSize',
+                'fontFamily',
+                'fontColor',
+                'fontBackgroundColor',
+                '|',
+                'alignment',
+                '|',
+                'bulletedList',
+                'numberedList',
+                'outdent',
+                'indent',
+                '|',
+                'link',
+                'blockQuote',
+                'insertTable',
+                '|',
+                'undo',
+                'redo',
+                '|',
+                'removeFormat'
+              ],
+              shouldNotGroupWhenFull: false
+            },
+            heading: {
+              options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+              ]
+            },
+            fontSize: {
+              options: ['tiny', 'small', 'default', 'big', 'huge']
+            },
+            fontFamily: {
+              options: [
+                'default',
+                'Arial, Helvetica, sans-serif',
+                'Courier New, Courier, monospace',
+                'Georgia, serif',
+                'Times New Roman, Times, serif'
+              ]
+            },
+            fontColor: {
+              colors: [
+                { color: 'hsl(0, 0%, 0%)', label: 'Black' },
+                { color: 'hsl(0, 0%, 30%)', label: 'Dim grey' },
+                { color: 'hsl(0, 0%, 60%)', label: 'Grey' },
+                { color: 'hsl(0, 0%, 90%)', label: 'Light grey' },
+                { color: 'hsl(0, 0%, 100%)', label: 'White' },
+                { color: 'hsl(0, 100%, 50%)', label: 'Red' },
+                { color: 'hsl(30, 100%, 50%)', label: 'Orange' },
+                { color: 'hsl(60, 100%, 50%)', label: 'Yellow' },
+                { color: 'hsl(120, 100%, 50%)', label: 'Green' },
+                { color: 'hsl(180, 100%, 50%)', label: 'Cyan' },
+                { color: 'hsl(240, 100%, 50%)', label: 'Blue' },
+                { color: 'hsl(300, 100%, 50%)', label: 'Magenta' }
+              ]
+            },
+            fontBackgroundColor: {
+              colors: [
+                { color: 'hsl(0, 0%, 0%)', label: 'Black' },
+                { color: 'hsl(0, 0%, 30%)', label: 'Dim grey' },
+                { color: 'hsl(0, 0%, 60%)', label: 'Grey' },
+                { color: 'hsl(0, 0%, 90%)', label: 'Light grey' },
+                { color: 'hsl(0, 0%, 100%)', label: 'White' },
+                { color: 'hsl(0, 100%, 50%)', label: 'Red' },
+                { color: 'hsl(30, 100%, 50%)', label: 'Orange' },
+                { color: 'hsl(60, 100%, 50%)', label: 'Yellow' },
+                { color: 'hsl(120, 100%, 50%)', label: 'Green' },
+                { color: 'hsl(180, 100%, 50%)', label: 'Cyan' },
+                { color: 'hsl(240, 100%, 50%)', label: 'Blue' },
+                { color: 'hsl(300, 100%, 50%)', label: 'Magenta' }
+              ]
+            },
+            alignment: {
+              options: ['left', 'center', 'right', 'justify']
+            },
+            table: {
+              contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+            },
+            link: {
+              addTargetToExternalLinks: true,
+              defaultProtocol: 'https://',
+            },
+            placeholder: placeholder,
+            language: 'en',
+          })
+          .then((newEditor: any) => {
+            setEditor(newEditor)
+            newEditor.setData(data)
+            
+            newEditor.model.document.on('change:data', () => {
+              onChange(newEditor.getData())
+            })
+          })
+          .catch((error: any) => {
+            console.error('Error initializing editor:', error)
+          })
+      }
+    }
+    document.head.appendChild(script)
+
+    return () => {
+      if (editor) {
+        editor.destroy()
+      }
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
+    }
+  }, [])
+
+  // Update editor content when data prop changes externally
+  useEffect(() => {
+    if (editor && data !== editor.getData()) {
+      editor.setData(data)
+    }
+  }, [data, editor])
+
+  if (isLoading) {
+    return (
+      <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 h-64 flex items-center justify-center">
+        <div className="animate-pulse text-gray-400">Loading editor...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="ckeditor-container">
+      <div ref={editorRef} />
+    </div>
+  )
+}
+
+const mapBannerToFormData = (banner: Banner): BannerFormData => ({
+  name: banner.name,
+  background_color: banner.background_color || '#ffffff',
+  image: banner.image,
+  description: banner.description || '',
+  heading: banner.heading || '',
+  side_text: banner.side_text || '',
+  vertical_text: banner.vertical_text || '',
+})
+
+export default function EditBannerPage() {
+  const [banner, setBanner] = useState<Banner | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState<BannerFormData | null>(null)
+  
+  const params = useParams()
   const router = useRouter()
+  const id = params.id as string
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )    
+  )
 
   useEffect(() => {
-    fetchBanners()
-  }, [])
+    fetchBanner()
+  }, [id])
 
-  const fetchBanners = async () => {
+  const fetchBanner = async () => {
     try {
       const { data, error } = await supabase
         .from('websites')
         .select('*')
-        .order('created_at', { ascending: false })
+        .eq('id', id)
+        .single()
 
       if (error) throw error
-      setBanners(data || [])
+      
+      setBanner(data)
+      setFormData(mapBannerToFormData(data))
     } catch (error) {
-      console.error('Error fetching banners:', error)
-      alert('Error fetching banners')
+      console.error('Error fetching banner:', error)
+      alert('Error fetching banner')
+      router.push('/admin/banners')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
-      return
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!formData) return
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev!,
+      [name]: value
+    }))
+  }
 
-    setDeleteLoading(id)
+  const handleHeadingChange = (value: string) => {
+    if (!formData) return
+    setFormData(prev => ({
+      ...prev!,
+      heading: value
+    }))
+  }
+
+  const handleImageChange = (file: File | null) => {
+    if (!formData) return
+    setFormData(prev => ({
+      ...prev!,
+      image: file
+    }))
+  }
+
+  const uploadImage = async (file: File, path: string): Promise<string | null> => {
     try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `${path}/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('website-assets')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('website-assets')
+        .getPublicUrl(filePath)
+
+      return publicUrl
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      return null
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!banner || !formData) return
+
+    setSaving(true)
+
+    try {
+      const updates: Partial<Banner> = {
+        name: formData.name,
+        background_color: formData.background_color,
+        description: formData.description,
+        heading: formData.heading,
+        side_text: formData.side_text,
+        vertical_text: formData.vertical_text,
+        updated_at: new Date().toISOString()
+      }
+
+      // Handle image upload
+      if (formData.image instanceof File) {
+        const url = await uploadImage(formData.image, 'banner-images')
+        if (url) updates.image = url
+      } else if (typeof formData.image === 'string') {
+        updates.image = formData.image
+      } else {
+        updates.image = null
+      }
+
       const { error } = await supabase
         .from('websites')
-        .delete()
-        .eq('id', id)
+        .update(updates)
+        .eq('id', banner.id)
 
       if (error) throw error
-      
-      await fetchBanners()
-      alert('Banner deleted successfully!')
+
+      alert('Banner updated successfully!')
+      router.push(`/admin/panel/${id}`)
+      router.refresh()
     } catch (error) {
-      console.error('Error deleting banner:', error)
-      alert('Error deleting banner')
+      console.error('Error updating banner:', error)
+      alert('Error updating banner')
     } finally {
-      setDeleteLoading(null)
+      setSaving(false)
     }
   }
 
-  // Helper function to strip HTML tags for preview
-  const stripHtml = (html: string | null) => {
-    if (!html) return ''
-    const tmp = document.createElement('div')
-    tmp.innerHTML = html
-    return tmp.textContent || tmp.innerText || ''
+  const handleReset = () => {
+    if (banner) {
+      setFormData(mapBannerToFormData(banner))
+    }
   }
 
-  if (loading) {
+  if (loading || !formData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading banners...</p>
+          <p className="mt-4 text-gray-600">Loading banner...</p>
         </div>
       </div>
     )
@@ -137,178 +442,239 @@ export default function BannersListPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Banners</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Manage your banner configurations
-              </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link
+                href={`/admin/panel/${id}`}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Edit Banner</h1>
+                <p className="text-sm text-gray-600 mt-1">{banner?.name}</p>
+              </div>
             </div>
-            <Link
-              href="/admin/panel/add"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              <span>Add New Banner</span>
-            </Link>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {banners.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No banners found</h3>
-            <p className="text-gray-500 mb-6">Get started by creating your first banner configuration.</p>
-            <Link
-              href="/admin/panel/add"
-              className="inline-flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Add New Banner
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {banners.map((banner) => (
-              <div
-                key={banner.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-              >
-                {/* Image Section */}
-                {banner.image ? (
-                  <div className="h-48 overflow-hidden">
-                    <img
-                      src={banner.image}
-                      alt={banner.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div 
-                    className="h-48 flex items-center justify-center"
-                    style={{ backgroundColor: banner.background_color || '#f3f4f6' }}
-                  >
-                    <span className="text-gray-400">No image</span>
-                  </div>
-                )}
-                
-                {/* Content Section */}
-                <div className="p-6 flex-1 flex flex-col">
-                  {/* Banner Name */}
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-1">
-                    {banner.name}
-                  </h3>
-                  
-                  {/* Heading Preview (if exists) */}
-                  {banner.heading && (
-                    <div className="mb-3">
-                      <div className="text-xs text-gray-500 mb-1">Heading Preview:</div>
-                      <div className="text-sm text-gray-700 line-clamp-2 rich-text-preview">
-                        {stripHtml(banner.heading)}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Description/Eyebrow */}
-                  {banner.description && (
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {banner.description}
-                    </p>
-                  )}
-                  
-                  {/* Side Text & Vertical Text Indicators */}
-                  {(banner.side_text || banner.vertical_text) && (
-                    <div className="flex gap-3 mb-3 text-xs">
-                      {banner.side_text && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded">
-                          Side: {banner.side_text.length > 20 ? banner.side_text.substring(0, 20) + '...' : banner.side_text}
-                        </span>
-                      )}
-                      {banner.vertical_text && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded">
-                          Vertical: {banner.vertical_text.length > 20 ? banner.vertical_text.substring(0, 20) + '...' : banner.vertical_text}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  
-                  {/* Date */}
-                  <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>Created: {new Date(banner.created_at || '').toLocaleDateString()}</span>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex space-x-2 mt-auto">
-                    <Link
-                      href={`/admin/panel/${banner.id}`}
-                      className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center text-sm"
-                    >
-                      View
-                    </Link>
-                    <Link
-                      href={`/admin/panel/${banner.id}/edit`}
-                      className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-center text-sm"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(banner.id, banner.name)}
-                      disabled={deleteLoading === banner.id}
-                      className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {deleteLoading === banner.id ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </div>
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto">
+          {/* Basic Information */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Banner Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter banner name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Background Color
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="color"
+                    name="background_color"
+                    value={formData.background_color}
+                    onChange={handleInputChange}
+                    className="h-10 w-20 rounded border cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    name="background_color"
+                    value={formData.background_color}
+                    onChange={handleInputChange}
+                    className="flex-1 border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="#ffffff"
+                  />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        )}
+
+          {/* Main Image */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">Main Image</h2>
+            
+            <ImageUpload
+              currentImage={typeof formData.image === 'string' ? formData.image : null}
+              onImageChange={handleImageChange}
+              label="Banner Main Image"
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Recommended size: 1920x1080px. Max size: 5MB
+            </p>
+          </div>
+
+          {/* Description */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">Banner Eyebrow</h2>
+            
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+              className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter banner eyebrow..."
+            />
+          </div>
+
+          {/* Main Heading with CKEditor */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">Main Heading (Rich Text Editor)</h2>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Heading Content
+              </label>
+              
+              <RichTextEditor
+                data={formData.heading}
+                onChange={handleHeadingChange}
+                placeholder="Enter heading text with full rich text formatting..."
+              />
+              
+              <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                <span>💡 Features: Text formatting, colors, lists, tables, links, and more!</span>
+                <span className="font-mono">HTML formatting preserved</span>
+              </div>
+              
+              {/* Character Count (without HTML tags) */}
+              {formData.heading && (
+                <div className="text-right text-xs text-gray-400 mt-2">
+                  Character count: {formData.heading.replace(/<[^>]*>/g, '').length}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Side Text and Vertical Text */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold mb-4">Additional Background Overlay Text</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Side Text
+                </label>
+                <textarea
+                  name="side_text"
+                  value={formData.side_text}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter side text..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Vertical Text
+                </label>
+                <textarea
+                  name="vertical_text"
+                  value={formData.vertical_text}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter vertical text..."
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex justify-end space-x-4 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Reset Changes
+            </button>
+            <Link
+              href={`/admin/panel/${id}`}
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed min-w-[120px]"
+            >
+              {saving ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </span>
+              ) : (
+                'Save Changes'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
 
-      {/* Add styles for rich text preview */}
+      {/* Add custom styles for CKEditor */}
       <style jsx global>{`
-        .rich-text-preview {
-          line-height: 1.4;
+        .ckeditor-container {
+          width: 100%;
         }
-        .rich-text-preview h1, 
-        .rich-text-preview h2, 
-        .rich-text-preview h3,
-        .rich-text-preview h4 {
-          font-weight: 600;
-          margin: 0;
-          font-size: inherit;
+        .ckeditor-container .ck-editor__editable {
+          min-height: 300px;
+          max-height: 500px;
         }
-        .rich-text-preview p {
-          margin: 0;
+        .ckeditor-container .ck-content {
+          font-size: 14px;
+          line-height: 1.6;
         }
-        .rich-text-preview strong,
-        .rich-text-preview b {
-          font-weight: 600;
+        .ckeditor-container .ck-content h1 {
+          font-size: 2em;
+          font-weight: bold;
         }
-        .rich-text-preview em,
-        .rich-text-preview i {
-          font-style: italic;
+        .ckeditor-container .ck-content h2 {
+          font-size: 1.5em;
+          font-weight: bold;
         }
-        .line-clamp-1 {
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .ckeditor-container .ck-content h3 {
+          font-size: 1.17em;
+          font-weight: bold;
         }
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .ckeditor-container .ck-content h4 {
+          font-size: 1em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content h5 {
+          font-size: 0.83em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content h6 {
+          font-size: 0.67em;
+          font-weight: bold;
+        }
+        .ckeditor-container .ck-content p {
+          margin-bottom: 1em;
         }
       `}</style>
     </div>
