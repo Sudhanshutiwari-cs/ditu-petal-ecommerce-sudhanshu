@@ -111,7 +111,7 @@ function RatingBar({ rating, count, total }: { rating: number; count: number; to
 }
 
 // Main Product Page Component
-export default function ProductPage({ params }: { params: { slug: string } }) {
+export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const [selectedColor, setSelectedColor] = useState(0)
   const [selectedSize, setSelectedSize] = useState(0)
   const [currentImage, setCurrentImage] = useState(0)
@@ -122,12 +122,24 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [popularProducts, setPopularProducts] = useState<any[]>([])
   const [quantity, setQuantity] = useState(1)
   const [addingToCart, setAddingToCart] = useState(false)
+  const [slug, setSlug] = useState<string | null>(null)
 
   const supabase = createClient()
+
+  // Unwrap params Promise
+  useEffect(() => {
+    async function unwrapParams() {
+      const unwrappedParams = await params
+      setSlug(unwrappedParams.slug)
+    }
+    unwrapParams()
+  }, [params])
 
   // Fetch product by slug
   useEffect(() => {
     async function fetchProduct() {
+      if (!slug) return
+      
       try {
         setLoading(true)
         
@@ -152,7 +164,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               slug
             )
           `)
-          .eq('slug', params.slug)
+          .eq('slug', slug)
           .single()
 
         if (productError) throw productError
@@ -196,10 +208,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       }
     }
 
-    if (params.slug) {
-      fetchProduct()
-    }
-  }, [params.slug])
+    fetchProduct()
+  }, [slug, supabase])
 
   // Parse color options from the product
   const getColorOptions = () => {
@@ -218,7 +228,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           }))
         }
         // If single color value
-        return [{ name: product.color, color: getColorHex(product.color) }]
+        return [{ name: product.color || 'Default', color: getColorHex(product.color) }]
       } catch {
         return [{ name: product.color || 'Default', color: '#4A4A3A' }]
       }
@@ -280,7 +290,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   // Add to cart function
   const addToCart = async () => {
-    if (!product || product.stock === 0) return
+    if (!product || product.stock === 0 || !slug) return
     
     setAddingToCart(true)
     try {
@@ -288,7 +298,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       
       if (!user) {
         // Redirect to login or show login modal
-        window.location.href = '/login?redirect=/product/' + params.slug
+        window.location.href = '/login?redirect=/product/' + slug
         return
       }
 
